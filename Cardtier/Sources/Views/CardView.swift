@@ -29,12 +29,10 @@ public struct CardView: View {
     @Binding var focusedCardID: UUID?
     
     /// Animation for card flipping transitions
-    /// Spring animation provides natural, physical feel to the flip
-    private let flipAnimation = Animation.spring(response: 0.5, dampingFraction: 0.7)
+    private let flipAnimation = CardDesign.Animation.flipTransition
     
     /// Animation for card selection/deselection
-    /// Slightly different timing than flip animation for better UX
-    private let selectionAnimation = Animation.spring(response: 0.6, dampingFraction: 0.75)
+    private let selectionAnimation = CardDesign.Animation.selectionTransition
     
     /// Determines if this specific card is currently focused
     /// Compares this card's ID with the focused card ID
@@ -51,7 +49,7 @@ public struct CardView: View {
     /// Additional vertical offset for non-focused cards when a card is selected
     /// Creates a "stack collapse" effect where unfocused cards move down
     private var stackCollapseOffset: CGFloat {
-        isAnyCardFocused && !isFocused ? 100 : 0
+        isAnyCardFocused && !isFocused ? CardDesign.Layout.unfocusedOffset : 0
     }
 
     /// Creates a new card view
@@ -86,10 +84,9 @@ public struct CardView: View {
     
     public var body: some View {
         GeometryReader { geometry in
-            // Calculate card size based on available width (95% of screen width, max 500pt)
-            // Maintains 16:10 aspect ratio for business card standard format
-            let cardWidth = min(geometry.size.width * 0.95, 500)
-            let cardHeight = cardWidth / 1.6 // 16:10 aspect ratio
+            // Calculate card size based on available width
+            let cardWidth = min(geometry.size.width * CardDesign.Layout.cardWidthMultiplier, CardDesign.Layout.maxCardWidth)
+            let cardHeight = cardWidth / CardDesign.Layout.cardAspectRatio
             
             ZStack {
                 // Front side of the card - using style from card model
@@ -114,9 +111,9 @@ public struct CardView: View {
             }
             .frame(width: cardWidth, height: cardHeight)
             .position(x: geometry.size.width / 2, y: geometry.size.height / 2) // Center in container
-            .scaleEffect(isFocused ? 1.05 : 1.0) // Slightly enlarge focused card
-            .blur(radius: isAnyCardFocused && !isFocused ? 1.5 : 0) // Blur unfocused cards
-            .brightness(isAnyCardFocused ? (isFocused ? 0.03 : -0.05) : 0) // Adjust brightness for focus state
+            .scaleEffect(isFocused ? CardDesign.Layout.focusedScale : 1.0) // Slightly enlarge focused card
+            .blur(radius: isAnyCardFocused && !isFocused ? CardDesign.Effects.unfocusedBlur : CardDesign.Effects.focusedBlur)
+            .brightness(isAnyCardFocused ? (isFocused ? CardDesign.Effects.focusedBrightness : CardDesign.Effects.unfocusedBrightness) : 0)
             .offset(y: stackCollapseOffset) // Move unfocused cards down
             .onTapGesture {
                 if isFocused {
@@ -147,16 +144,27 @@ public struct CardView: View {
     /// Creates a card face with the specified style
     /// Includes styling like background, shadow, and content based on design style
     private func cardFace(style: CardDesignStyle) -> some View {
-        RoundedRectangle(cornerRadius: 0)
-            .fill(Color.white) // White background for card
-            .shadow(radius: isFocused ? 8 : 4, x: 0, y: isFocused ? 4 : 2) // Enhanced shadow for focused cards
+        RoundedRectangle(cornerRadius: CardDesign.Layout.cornerRadius)
+            .fill(card.style.primaryColor) // Use card's primary color for background
+            .shadow(
+                radius: isFocused ? CardDesign.Effects.focusedShadowRadius : CardDesign.Effects.unfocusedShadowRadius,
+                x: 0,
+                y: isFocused ? CardDesign.Effects.focusedShadowY : CardDesign.Effects.unfocusedShadowY
+            )
             .overlay(
-                cardContentForStyle(style) // Content differs based on card style
+                cardContentForStyle(style)
             )
             .overlay(
                 Rectangle()
-                    .fill(Color.black.opacity(isAnyCardFocused && !isFocused ? 0.15 : 0)) // Dim unfocused cards
+                    .fill(card.style.secondaryColor?.opacity(isAnyCardFocused && !isFocused ? CardDesign.Effects.dimOpacity : 0) ??
+                          CardDesign.Colors.primary.opacity(isAnyCardFocused && !isFocused ? CardDesign.Effects.dimOpacity : 0))
             )
+            .onAppear {
+                print("Card: \(card.name)")
+                if let secondary = card.style.secondaryColor {
+                    print("Secondary color: \(secondary.toHex)")
+                }
+            }
     }
     
     /// Returns the appropriate content view for the given card style
@@ -179,210 +187,191 @@ public struct CardView: View {
 /// Modern design for front card face
 /// Features name, title, and company with left-aligned layout
 private struct ModernFrontCardContent: View {
-    let card: Card // Card data to display
-    let showInfoAction: () -> Void // Action to show detailed info sheet
+    let card: Card
+    let showInfoAction: () -> Void
     
     var body: some View {
         VStack(alignment: .leading) {
-            Spacer().frame(height: 20) // Top margin
+            Spacer().frame(height: CardDesign.Padding.large)
             
-            // Main information section
-            VStack(alignment: .leading, spacing: 4) {
-                // Name is always displayed prominently
+            VStack(alignment: .leading, spacing: CardDesign.Padding.small) {
                 Text(card.name)
-                    .font(.title2)
+                    .font(CardDesign.Typography.titleFont)
                     .bold()
-                    .foregroundColor(.black)
+                    .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
                 
-                // Title (job position) if available
                 if let title = card.title {
                     Text(title)
-                        .font(.headline)
-                        .foregroundColor(.gray)
+                        .font(CardDesign.Typography.headlineFont)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
                 }
                 
-                // Company name if available
                 if let company = card.company {
                     Text(company)
-                        .font(.subheadline)
-                        .foregroundColor(.black)
-                        .padding(.top, 2)
+                        .font(CardDesign.Typography.subheadlineFont)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+                        .padding(.top, CardDesign.Padding.small / 2)
                 }
             }
             
-            Spacer() // Push content to top
+            Spacer()
             
-            // Info button in bottom right corner
             HStack {
                 Spacer()
                 Button(action: showInfoAction) {
                     Image(systemName: "info.circle")
-                        .font(.title2)
-                        .foregroundColor(.black)
+                        .font(CardDesign.Typography.titleFont)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
         }
-        .padding() // Padding around all content
+        .padding(CardDesign.Padding.standard)
     }
 }
+
 
 /// Modern design for back card face
 /// Features contact information, address, and slogan with left-aligned layout
 private struct ModernBackCardContent: View {
-    let card: Card // Card data to display
-    let showInfoAction: () -> Void // Action to show detailed info sheet
+    let card: Card
+    let showInfoAction: () -> Void
     
     var body: some View {
         VStack(alignment: .leading) {
-            // Information section with company, role, contact info
-            VStack(alignment: .leading, spacing: 6) {
-                // Company name if available
+            VStack(alignment: .leading, spacing: CardDesign.Padding.medium - 2) {
                 if let company = card.company {
                     Text(company)
-                        .font(.headline)
-                        .foregroundColor(.black)
+                        .font(CardDesign.Typography.headlineFont)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
                 }
                 
-                // Role/department if available
                 if let role = card.role {
                     Text(role)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .font(CardDesign.Typography.subheadlineFont)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
                 }
                 
-                // Contact information (email, phone) if available
                 if card.contactInformation.hasAnyInformation {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: CardDesign.Padding.small) {
                         if let email = card.contactInformation.email {
                             Text(email)
-                                .font(.footnote)
-                                .foregroundColor(.black)
+                                .font(CardDesign.Typography.footnoteFont)
+                                .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
                         }
                         
                         if let phone = card.contactInformation.phoneNumber {
                             Text(phone)
-                                .font(.footnote)
-                                .foregroundColor(.black)
+                                .font(CardDesign.Typography.footnoteFont)
+                                .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
                         }
                     }
-                    .padding(.top, 4)
+                    .padding(.top, CardDesign.Padding.small)
                 }
                 
-                // Business address if available
                 if let address = card.businessAddress?.formattedAddress {
                     Text(address)
-                        .font(.footnote)
-                        .foregroundColor(.black)
-                        .padding(.top, 2)
+                        .font(CardDesign.Typography.footnoteFont)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+                        .padding(.top, CardDesign.Padding.small / 2)
                 }
                 
-                // Company slogan/tagline if available
                 if let slogan = card.slogan {
                     Text("\"\(slogan)\"")
-                        .font(.caption)
+                        .font(CardDesign.Typography.captionFont)
                         .italic()
-                        .foregroundColor(.gray)
-                        .padding(.top, 4)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
+                        .padding(.top, CardDesign.Padding.small)
                 }
             }
             
-            Spacer() // Push content to top
+            Spacer()
             
-            // Info button in bottom right corner
             HStack {
                 Spacer()
                 Button(action: showInfoAction) {
                     Image(systemName: "info.circle")
-                        .font(.title2)
-                        .foregroundColor(.black)
+                        .font(CardDesign.Typography.titleFont)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
         }
-        .padding() // Padding around all content
+        .padding(CardDesign.Padding.standard)
     }
 }
 
 /// Minimal design for front card face
 /// Simplified, centered layout with just name and title
 private struct MinimalFrontCardContent: View {
-    let card: Card // Card data to display
-    let showInfoAction: () -> Void // Action to show detailed info sheet
+    let card: Card
+    let showInfoAction: () -> Void
     
     var body: some View {
         VStack(alignment: .center) {
-            Spacer() // Push content to center
+            Spacer()
             
-            // Name is always displayed prominently
             Text(card.name)
-                .font(.title3)
+                .font(CardDesign.Typography.titleFont)
                 .bold()
-                .foregroundColor(.black)
+                .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
             
-            // Title (job position) if available
             if let title = card.title {
                 Text(title)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+                    .font(CardDesign.Typography.subheadlineFont)
+                    .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
             }
             
-            Spacer() // Push content to center
+            Spacer()
             
-            // Info button in bottom right corner
             HStack {
                 Spacer()
                 Button(action: showInfoAction) {
                     Image(systemName: "info.circle")
-                        .font(.title2)
-                        .foregroundColor(.black)
+                        .font(CardDesign.Typography.titleFont)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
         }
-        .padding() // Padding around all content
+        .padding(CardDesign.Padding.standard)
     }
 }
 
-/// Minimal design for back card face
-/// Simplified, centered layout with company and email only
 private struct MinimalBackCardContent: View {
-    let card: Card // Card data to display
-    let showInfoAction: () -> Void // Action to show detailed info sheet
+    let card: Card
+    let showInfoAction: () -> Void
     
     var body: some View {
         VStack(alignment: .center) {
-            Spacer() // Push content to center
+            Spacer()
             
-            // Company name if available
             if let company = card.company {
                 Text(company)
-                    .font(.headline)
-                    .foregroundColor(.black)
+                    .font(CardDesign.Typography.headlineFont)
+                    .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
             }
             
-            // Email if available
             if let email = card.contactInformation.email {
                 Text(email)
-                    .font(.caption)
-                    .foregroundColor(.gray)
-                    .padding(.top, 4)
+                    .font(CardDesign.Typography.captionFont)
+                    .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
+                    .padding(.top, CardDesign.Padding.small)
             }
             
-            Spacer() // Push content to center
+            Spacer()
             
-            // Info button in bottom right corner
             HStack {
                 Spacer()
                 Button(action: showInfoAction) {
                     Image(systemName: "info.circle")
-                        .font(.title2)
-                        .foregroundColor(.black)
+                        .font(CardDesign.Typography.titleFont)
+                        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
         }
-        .padding() // Padding around all content
+        .padding(CardDesign.Padding.standard)
     }
 }
 
@@ -396,41 +385,41 @@ private struct CardInfoSheet: View {
     @Binding var isPresented: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: CardDesign.Padding.large) {
             // Header with name
             Text(card.name)
-                .font(.headline)
-                .foregroundColor(Color(UIColor.label))
+                .font(CardDesign.Typography.headlineFont)
+                .foregroundColor(CardDesign.Colors.primary)
 
             // Contact information section - only displayed if information exists
             if card.contactInformation.hasAnyInformation {
                 Group {
                     Text("Contact Information")
-                        .font(.subheadline)
+                        .font(CardDesign.Typography.subheadlineFont)
                         .bold()
-                        .foregroundColor(Color(UIColor.label))
+                        .foregroundColor(CardDesign.Colors.primary)
 
                     // List of contact details
-                    VStack(alignment: .leading, spacing: 6) {
+                    VStack(alignment: .leading, spacing: CardDesign.Padding.medium - 2) {
                         if let email = card.contactInformation.email {
                             Text("Email: \(email)")
-                                .foregroundColor(Color(UIColor.label))
+                                .foregroundColor(CardDesign.Colors.primary)
                         }
                         if let phone = card.contactInformation.phoneNumber {
                             Text("Phone: \(phone)")
-                                .foregroundColor(Color(UIColor.label))
+                                .foregroundColor(CardDesign.Colors.primary)
                         }
                         if let fax = card.contactInformation.faxNumber {
                             Text("Fax: \(fax)")
-                                .foregroundColor(Color(UIColor.label))
+                                .foregroundColor(CardDesign.Colors.primary)
                         }
                         if let website = card.contactInformation.websiteURL {
                             Text("Website: \(website.absoluteString)")
-                                .foregroundColor(Color(UIColor.label))
+                                .foregroundColor(CardDesign.Colors.primary)
                         }
                         if let linkedin = card.contactInformation.linkedInURL {
                             Text("LinkedIn: \(linkedin.absoluteString)")
-                                .foregroundColor(Color(UIColor.label))
+                                .foregroundColor(CardDesign.Colors.primary)
                         }
                     }
                     Divider() // Visual separator
@@ -441,12 +430,12 @@ private struct CardInfoSheet: View {
             if let address = card.businessAddress, address.hasAnyInformation {
                 Group {
                     Text("Business Address")
-                        .font(.subheadline)
+                        .font(CardDesign.Typography.subheadlineFont)
                         .bold()
-                        .foregroundColor(Color(UIColor.label))
+                        .foregroundColor(CardDesign.Colors.primary)
 
                     Text(address.formattedAddress ?? "")
-                        .foregroundColor(Color(UIColor.label))
+                        .foregroundColor(CardDesign.Colors.primary)
 
                     Divider() // Visual separator
                 }
@@ -455,15 +444,15 @@ private struct CardInfoSheet: View {
             // Collection metadata - when and where the card was collected
             Group {
                 Text("Collection Data")
-                    .font(.subheadline)
+                    .font(CardDesign.Typography.subheadlineFont)
                     .bold()
-                    .foregroundColor(Color(UIColor.label))
+                    .foregroundColor(CardDesign.Colors.primary)
 
                 Text("Date: \(card.collectionDate.formatted(date: .long, time: .shortened))")
-                    .foregroundColor(Color(UIColor.label))
+                    .foregroundColor(CardDesign.Colors.primary)
 
                 Text("Location: \(card.collectionLocation.latitude, specifier: "%.4f"), \(card.collectionLocation.longitude, specifier: "%.4f")")
-                    .foregroundColor(Color(UIColor.label))
+                    .foregroundColor(CardDesign.Colors.primary)
             }
 
             Spacer() // Push content to top, button to bottom
@@ -473,12 +462,12 @@ private struct CardInfoSheet: View {
                 isPresented = false
             }
             .frame(maxWidth: .infinity) // Full width button
-            .padding(.vertical, 8)
-            .background(Color.blue)
+            .padding(.vertical, CardDesign.Padding.medium)
+            .background(CardDesign.Colors.accent)
             .foregroundColor(.white)
             .cornerRadius(8)
         }
-        .padding() // Padding around all content
-        .background(Color(UIColor.systemBackground)) // System background color for light/dark mode
+        .padding(CardDesign.Padding.standard) // Padding around all content
+        .background(Color(.systemBackground)) // System background color for light/dark mode
     }
 }

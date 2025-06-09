@@ -73,7 +73,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.2, green: 0.5, blue: 0.8, alpha: 1.0),
+            secondaryColor: Color(red: 0.2, green: 0.5, blue: 0.8, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -96,7 +96,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.8, green: 0.3, blue: 0.3, alpha: 1.0),
+            secondaryColor: Color(red: 0.8, green: 0.3, blue: 0.3, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -114,7 +114,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.3, green: 0.6, blue: 0.3, alpha: 1.0),
+            secondaryColor: Color(red: 0.3, green: 0.6, blue: 0.3, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -132,7 +132,7 @@ private static var sampleCards: [Card] = [
         slogan: "Design with purpose",
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.5, green: 0.3, blue: 0.7, alpha: 1.0),
+            secondaryColor: Color(red: 0.5, green: 0.3, blue: 0.7, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -153,7 +153,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.1, green: 0.7, blue: 0.7, alpha: 1.0),
+            secondaryColor: Color(red: 0.1, green: 0.7, blue: 0.7, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -171,7 +171,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.0, green: 0.5, blue: 0.5, alpha: 1.0),
+            secondaryColor: Color(red: 0.0, green: 0.5, blue: 0.5, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -194,7 +194,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.2, green: 0.2, blue: 0.4, alpha: 1.0),
+            secondaryColor: Color(red: 0.2, green: 0.2, blue: 0.4, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -212,7 +212,7 @@ private static var sampleCards: [Card] = [
         slogan: "Creating memorable brands",
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.9, green: 0.4, blue: 0.0, alpha: 1.0),
+            secondaryColor: Color(red: 0.9, green: 0.4, blue: 0.0, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -233,7 +233,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.9, green: 0.8, blue: 0.0, alpha: 1.0),
+            secondaryColor: Color(red: 0.9, green: 0.8, blue: 0.0, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -250,7 +250,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.6, green: 0.2, blue: 0.8, alpha: 1.0),
+            secondaryColor: Color(red: 0.6, green: 0.2, blue: 0.8, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -266,7 +266,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 1.0, green: 0.5, blue: 0.0, alpha: 1.0),
+            secondaryColor: Color(red: 1.0, green: 0.5, blue: 0.0, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -288,7 +288,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.9, green: 0.4, blue: 0.6, alpha: 1.0),
+            secondaryColor: Color(red: 0.9, green: 0.4, blue: 0.6, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -305,7 +305,7 @@ private static var sampleCards: [Card] = [
         slogan: "Building the future",
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0),
+            secondaryColor: Color(red: 0.5, green: 0.5, blue: 0.5, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -322,7 +322,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.75, green: 0.75, blue: 0.8, alpha: 1.0),
+            secondaryColor: Color(red: 0.75, green: 0.75, blue: 0.8, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -343,7 +343,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.85, green: 0.7, blue: 0.2, alpha: 1.0),
+            secondaryColor: Color(red: 0.85, green: 0.7, blue: 0.2, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -361,7 +361,7 @@ private static var sampleCards: [Card] = [
         slogan: "Explore the world with us",
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.6, green: 0.4, blue: 0.2, alpha: 1.0),
+            secondaryColor: Color(red: 0.6, green: 0.4, blue: 0.2, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -382,7 +382,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.7, green: 0.4, blue: 0.3, alpha: 1.0),
+            secondaryColor: Color(red: 0.7, green: 0.4, blue: 0.3, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -403,7 +403,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.4, green: 0.4, blue: 0.5, alpha: 1.0),
+            secondaryColor: Color(red: 0.4, green: 0.4, blue: 0.5, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -420,7 +420,7 @@ private static var sampleCards: [Card] = [
         slogan: "Making a difference together",
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.6, green: 0.5, blue: 0.3, alpha: 1.0),
+            secondaryColor: Color(red: 0.6, green: 0.5, blue: 0.3, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -437,7 +437,7 @@ private static var sampleCards: [Card] = [
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.7, green: 0.7, blue: 0.8, alpha: 1.0),
+            secondaryColor: Color(red: 0.7, green: 0.7, blue: 0.8, opacity: 1.0),
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -445,62 +445,19 @@ private static var sampleCards: [Card] = [
     ),
     Card(
         name: "Sam Gold",
-        title: "Digital Marketing",
-        company: "E-commerce",
+        title: "Logistics Coordinator",
+        company: "Shipping Co",
         contactInformation: ContactInformation(
-            email: "sam@ecommerce.com",
-            phoneNumber: "+1 212 555 3579",
-            websiteURL: URL(string: "https://ecommerce.com")
+            email: "sam@shippingco.com",
+            phoneNumber: "+1 650 555 3692"
         ),
         style: CardStyle(
             primaryColor: .white,
-            secondaryColor: UIColor(red: 0.9, green: 0.8, blue: 0.2, alpha: 1.0),
+            secondaryColor: Color(red: 0.8, green: 0.6, blue: 0.4, opacity: 1.0),
             designStyle: .modern
         ),
         collectionDate: Date(),
-        collectionLocation: CLLocationCoordinate2D(latitude: 40.7128, longitude: -74.0060)
+        collectionLocation: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194)
     ),
-    Card(
-        name: "Tina Green",
-        title: "Creative Director",
-        company: "Fashion Brand",
-        contactInformation: ContactInformation(
-            email: "tina@fashionbrand.com",
-            phoneNumber: "+1 323 555 8642"
-        ),
-        businessAddress: Address(
-            city: "Los Angeles",
-            state: "CA",
-            country: "USA"
-        ),
-        slogan: "Style for every occasion",
-        style: CardStyle(
-            primaryColor: .white,
-            secondaryColor: UIColor(red: 0.3, green: 0.7, blue: 0.4, alpha: 1.0),
-            designStyle: .minimal
-        ),
-        collectionDate: Date(),
-        collectionLocation: CLLocationCoordinate2D(latitude: 34.0522, longitude: -118.2437)
-    ),
-    Card(
-        name: "Victor Blue",
-        title: "Sales Executive",
-        company: "Automotive Co",
-        contactInformation: ContactInformation(
-            email: "victor@automotiveco.com",
-            phoneNumber: "+1 617 555 9753"
-        ),
-        businessAddress: Address(
-            city: "Boston",
-            state: "MA",
-            country: "USA"
-        ),
-        style: CardStyle(
-            primaryColor: .white,
-            secondaryColor: UIColor(red: 0.1, green: 0.4, blue: 0.8, alpha: 1.0),
-            designStyle: .modern
-        ),
-        collectionDate: Date(),
-        collectionLocation: CLLocationCoordinate2D(latitude: 42.3601, longitude: -71.0589)
-    ),
-]}
+]
+}
