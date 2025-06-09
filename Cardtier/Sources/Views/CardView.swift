@@ -36,7 +36,7 @@ public struct CardView: View {
     public var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 0)
-                .fill(Color.white)
+                .fill(Color.white) // Keep cards white regardless of dark mode
                 .shadow(radius: 4)
                 .frame(height: CardDesign.Layout.cardHeight)
                 .overlay(
@@ -44,11 +44,11 @@ public struct CardView: View {
                         if isFlipped {
                             Text(card.backText)
                                 .font(.title2)
-                                .foregroundColor(.secondary)
-                            } else {
+                                .foregroundColor(.black) // Explicit dark color for text
+                        } else {
                             Text(card.frontText)
                                 .font(.title)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.black) // Explicit dark color for text
                         }
                         Spacer()
                         HStack {
@@ -58,6 +58,7 @@ public struct CardView: View {
                             }) {
                                 Image(systemName: "info.circle")
                                     .font(.title2)
+                                    .foregroundColor(.black) // Explicit dark color for icon
                             }
                             .buttonStyle(PlainButtonStyle())
                         }
@@ -99,18 +100,24 @@ private struct CardInfoSheet: View {
         VStack(spacing: 20) {
             Text("Card Metadata")
                 .font(.headline)
+                .foregroundColor(Color(UIColor.label))
             VStack(alignment: .leading, spacing: 8) {
                 Text("Collection Date:")
                     .font(.subheadline)
                     .bold()
+                    .foregroundColor(Color(UIColor.label))
                 Text(card.collectionDate.formatted(date: .long, time: .shortened))
                     .font(.body)
+                    .foregroundColor(Color(UIColor.label))
                 Divider()
                 Text("Collection Location:")
                     .font(.subheadline)
                     .bold()
+                    .foregroundColor(Color(UIColor.label))
                 Text("Lat: \(card.collectionLocation.latitude, specifier: "%.4f")")
+                    .foregroundColor(Color(UIColor.label))
                 Text("Lon: \(card.collectionLocation.longitude, specifier: "%.4f")")
+                    .foregroundColor(Color(UIColor.label))
             }
             Spacer()
             Button("Close") {
@@ -119,5 +126,6 @@ private struct CardInfoSheet: View {
             .padding(.top)
         }
         .padding()
+        .background(Color(UIColor.systemBackground))
     }
 }
