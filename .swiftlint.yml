@@ -1,0 +1,13 @@
+disabled_rules:
+  - trailing_comma
+  - opening_brace
+  - closure_parameter_position
+  - todo
+  - large_tuple
+
+excluded:
+  - .build
+
+nesting:
+  type_level:
+    warning: 2
