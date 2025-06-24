@@ -5,18 +5,28 @@ import SwiftUI
 public enum CardDesign {
     /// Animation configurations
     public enum Animation {
-        /// Standard animation for card focus/unfocus transitions
-        public static let focusTransition: SwiftUI.Animation = .spring(response: 0.3, dampingFraction: 0.7)
+            /// Standard animation for card focus/unfocus transitions
+            public static let focusTransition: SwiftUI.Animation = .spring(response: 0.3, dampingFraction: 0.7)
+            
+            /// Animation for card flip transitions
+            public static let flipTransition: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.7)
+            
+            /// Animation for card selection/deselection
+            public static let selectionTransition: SwiftUI.Animation = .spring(response: 0.6, dampingFraction: 0.75)
+            
+            /// Animation for the entire card stack
+            public static let stackAnimation: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.8, blendDuration: 0.3)
+            
+            /// Smooth transition when scrolling stops
+            public static let scrollEndTransition: SwiftUI.Animation = .easeOut(duration: 0.8)
+            
+            /// Duration for animations to gracefully wind down
+            public static let windDownDuration: Double = 0.7
+            
+            /// Damping fraction for smooth animation endings
+            public static let windDownDamping: Double = 0.65
+        }
         
-        /// Animation for card flip transitions
-        public static let flipTransition: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.7)
-        
-        /// Animation for card selection/deselection
-        public static let selectionTransition: SwiftUI.Animation = .spring(response: 0.6, dampingFraction: 0.75)
-        
-        /// Animation for the entire card stack
-        public static let stackAnimation: SwiftUI.Animation = .spring(response: 0.5, dampingFraction: 0.8, blendDuration: 0.3)
-    }
     
     /// Dimensions and layout values for card stack
     public enum Layout {
@@ -36,7 +46,7 @@ public enum CardDesign {
         public static let cornerRadius: CGFloat = 0
         
         /// Vertical offset between cards in the stack
-        public static let cardStackOffset: CGFloat = -120
+        public static let cardStackOffset: CGFloat = 10
         
         /// Top padding for the focused card
         public static let focusedCardTopPadding: CGFloat = 20
@@ -45,7 +55,7 @@ public enum CardDesign {
         public static let horizontalPadding: CGFloat = 20
         
         /// Top padding for the entire stack
-        public static let stackTopPadding: CGFloat = 260
+        public static let stackTopPadding: CGFloat = 180
         
         /// Minimum distance to recognize a drag gesture
         public static let dragMinDistance: CGFloat = 1

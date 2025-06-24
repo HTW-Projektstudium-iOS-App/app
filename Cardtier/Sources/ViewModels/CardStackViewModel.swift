@@ -19,6 +19,15 @@ public class CardStackViewModel: ObservableObject {
     
     /// Whether a drag operation is in progress
     @Published public var isDragging = false
+    
+    /// Whether the card stack is currently scrolling
+    @Published public var isScrolling = false
+    
+    /// Timestamp of the last scroll event
+    @Published public var lastScrollTime: Date = Date()
+    
+    // Add this to CardStackViewModel class
+    @Published public var scrollVelocity: CGFloat = 0
 
     /// Initializes with sample cards for preview/testing
     /// - Parameter withSampleData: Whether to load sample data
