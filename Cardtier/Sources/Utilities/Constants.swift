@@ -45,7 +45,7 @@ public enum CardDesign {
         /// Corner radius for cards
         public static let cornerRadius: CGFloat = 0
         
-        /// Vertical offset between cards in the stack
+        /// Offset for stacked cards
         public static let cardStackOffset: CGFloat = 10
         
         /// Top padding for the focused card

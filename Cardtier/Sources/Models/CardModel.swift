@@ -75,7 +75,7 @@ public struct Address: Codable {
     }
     
     /// Check if any address information is available
-    public var hasAnyInformation: Bool {
+    public var hasAddressInformation: Bool {
         street != nil || city != nil || state != nil ||
         postalCode != nil || country != nil
     }
@@ -163,6 +163,7 @@ public struct CardStyle: Codable {
 public enum CardDesignType: String, Codable {
     case modern
     case minimal
+    case traditional
     // Add more design types here as needed
 }
 
@@ -195,6 +196,9 @@ public struct Card: Identifiable, Codable {
     /// Company slogan or tagline
     public let slogan: String?
     
+    /// Multiple logos or images to display on the card
+    public let logos: [UIImage]?
+    
     /// Visual styling for the card
     public let style: CardStyle
     
@@ -215,6 +219,7 @@ public struct Card: Identifiable, Codable {
         businessAddress: Address? = nil,
         personalAddress: Address? = nil,
         slogan: String? = nil,
+        logos: [UIImage]? = nil,
         style: CardStyle = CardStyle(),
         collectionDate: Date = Date(),
         collectionLocation: CLLocationCoordinate2D = CLLocationCoordinate2D()
@@ -228,6 +233,7 @@ public struct Card: Identifiable, Codable {
         self.businessAddress = businessAddress
         self.personalAddress = personalAddress
         self.slogan = slogan
+        self.logos = logos
         self.style = style
         self.collectionDate = collectionDate
         self.collectionLocation = collectionLocation
@@ -236,7 +242,7 @@ public struct Card: Identifiable, Codable {
     // Custom Codable implementation for CLLocationCoordinate2D
     private enum CodingKeys: String, CodingKey {
         case id, name, title, role, company, contactInformation
-        case businessAddress, personalAddress, slogan, style
+        case businessAddress, personalAddress, slogan, logos, style
         case collectionDate, latitude, longitude
     }
     
@@ -251,6 +257,18 @@ public struct Card: Identifiable, Codable {
         try container.encode(businessAddress, forKey: .businessAddress)
         try container.encode(personalAddress, forKey: .personalAddress)
         try container.encode(slogan, forKey: .slogan)
+        
+        // Convert array of logos to array of Data
+        if let logos = logos, !logos.isEmpty {
+            var logoDataArray: [Data] = []
+            for logo in logos {
+                if let imageData = logo.pngData() {
+                        logoDataArray.append(imageData)
+                    }
+                }
+                try container.encode(logoDataArray, forKey: .logos)
+        }
+        
         try container.encode(style, forKey: .style)
         try container.encode(collectionDate, forKey: .collectionDate)
         try container.encode(collectionLocation.latitude, forKey: .latitude)
@@ -268,6 +286,20 @@ public struct Card: Identifiable, Codable {
         businessAddress = try container.decodeIfPresent(Address.self, forKey: .businessAddress)
         personalAddress = try container.decodeIfPresent(Address.self, forKey: .personalAddress)
         slogan = try container.decodeIfPresent(String.self, forKey: .slogan)
+        
+        // Convert array of Data back to array of UIImage
+        if let logoDataArray = try container.decodeIfPresent([Data].self, forKey: .logos) {
+            var decodedLogos: [UIImage] = []
+            for logoData in logoDataArray {
+                if let image = UIImage(data: logoData) {
+                    decodedLogos.append(image)
+                }
+            }
+            logos = decodedLogos.isEmpty ? nil : decodedLogos
+        } else {
+            logos = nil
+        }
+        
         style = try container.decode(CardStyle.self, forKey: .style)
         collectionDate = try container.decode(Date.self, forKey: .collectionDate)
         

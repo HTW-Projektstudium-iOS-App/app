@@ -5,5 +5,7 @@ public enum CardDesignStyle {
     case modernBack    // Modern design for the back side
     case minimalFront  // Minimal design for the front side
     case minimalBack   // Minimal design for the back side
+    case traditionalFront // Traditional design for the front side
+    case traditionalBack  // Traditional design for the back side
     // More styles can be added here for future design options
 }

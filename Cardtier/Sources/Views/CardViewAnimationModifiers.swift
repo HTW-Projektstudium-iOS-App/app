@@ -127,7 +127,7 @@ struct BreathingAnimation: ViewModifier {
                 anchor: .center,
                 perspective: 0.2
             )
-            // Paper-like slow breathing with subtle spring
+            // Slow breathing with subtle spring
             .animation(
                 isScrolling && !isFocused ?
                     Animation.spring(response: 0.9 + (randomDirection * 0.2),

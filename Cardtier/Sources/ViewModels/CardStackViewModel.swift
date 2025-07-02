@@ -73,17 +73,20 @@ private static var sampleCards: [Card] = [
         company: "Acme Corp",
         contactInformation: ContactInformation(
             email: "john@acme.com",
-            phoneNumber: "+49 123 456789"
+            phoneNumber: "+49 123 456789",
+            linkedInURL: URL(string: "https://linkedin.com/in/johndoe")
         ),
         businessAddress: Address(
             street: "Alexanderplatz 1",
             city: "Berlin",
             country: "Germany"
         ),
+        logos: [UIImage(named: "acme_logo")].compactMap { $0 },
         style: CardStyle(
-            primaryColor: .white,
-            secondaryColor: Color(red: 0.2, green: 0.5, blue: 0.8, opacity: 1.0),
-            designStyle: .modern
+            primaryColor: Color(red: 0.9, green: 0.9, blue: 0.9, opacity: 1.0),
+            secondaryColor: .black,
+            fontName: "PartyLetPlain",
+            designStyle: .traditional
         ),
         collectionDate: Date(),
         collectionLocation: CLLocationCoordinate2D(latitude: 52.5200, longitude: 13.4050)
@@ -106,6 +109,7 @@ private static var sampleCards: [Card] = [
         style: CardStyle(
             primaryColor: .white,
             secondaryColor: Color(red: 0.8, green: 0.3, blue: 0.3, opacity: 1.0),
+            fontName: "Palatino-Italic",
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -119,11 +123,13 @@ private static var sampleCards: [Card] = [
         contactInformation: ContactInformation(
             email: "alice@globalindustries.co.uk",
             phoneNumber: "+44 20 1234 5678",
+            websiteURL: URL(string: "https://globalindustries.co.uk"),
             linkedInURL: URL(string: "https://linkedin.com/in/alicejohnson")
         ),
         style: CardStyle(
-            primaryColor: .white,
-            secondaryColor: Color(red: 0.3, green: 0.6, blue: 0.3, opacity: 1.0),
+            primaryColor: .red,
+            secondaryColor: .black,
+            fontName: "Courier",
             designStyle: .modern
         ),
         collectionDate: Date(),
@@ -142,7 +148,8 @@ private static var sampleCards: [Card] = [
         style: CardStyle(
             primaryColor: .white,
             secondaryColor: Color(red: 0.5, green: 0.3, blue: 0.7, opacity: 1.0),
-            designStyle: .minimal
+            fontName: "SnellRoundhand",
+            designStyle: .traditional
         ),
         collectionDate: Date(),
         collectionLocation: CLLocationCoordinate2D(latitude: 40.7128, longitude: -74.0060)

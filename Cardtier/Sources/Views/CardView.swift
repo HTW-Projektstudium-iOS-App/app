@@ -72,6 +72,8 @@ public struct CardView: View {
             return isFront ? .modernFront : .modernBack
         case .minimal:
             return isFront ? .minimalFront : .minimalBack
+        case .traditional:
+            return isFront ? .traditionalFront : .traditionalBack
         }
     }
     
@@ -181,7 +183,7 @@ public struct CardView: View {
                     cardContentForStyle(style)
                 )
                 .overlay(
-                    // Status indicator 
+                    // Status indicator
                     Rectangle()
                         .fill(Color.clear) // Use clear color instead of opacity
                 )
@@ -210,17 +212,14 @@ public struct CardView: View {
     
     /// Returns the appropriate content view for the given card style
     /// Each style is implemented as a separate view component for modularity
-    @ViewBuilder
-    private func cardContentForStyle(_ style: CardDesignStyle) -> some View {
+    private func cardContentForStyle(_ style: CardDesignStyle) -> AnyView {
+        let designProvider = CardContentFactory.makeDesign(for: card, showInfoAction: { showInfo = true })
+        
         switch style {
-        case .modernFront:
-            ModernFrontCardContent(card: card, showInfoAction: { showInfo = true })
-        case .modernBack:
-            ModernBackCardContent(card: card, showInfoAction: { showInfo = true })
-        case .minimalFront:
-            MinimalFrontCardContent(card: card, showInfoAction: { showInfo = true })
-        case .minimalBack:
-            MinimalBackCardContent(card: card, showInfoAction: { showInfo = true })
+        case .modernFront, .minimalFront, .traditionalFront:
+            return AnyView(designProvider.frontContent())
+        case .modernBack, .minimalBack, .traditionalBack:
+            return AnyView(designProvider.backContent())
         }
     }
 }
