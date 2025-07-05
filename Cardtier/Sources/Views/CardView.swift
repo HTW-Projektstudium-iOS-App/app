@@ -1,4 +1,3 @@
-// Sources/Cardtier/Views/CardView.swift
 import SwiftUI
 
 /// Displays a single business card that can be flipped and shows metadata
@@ -77,6 +76,7 @@ public struct CardView: View {
         }
     }
     
+    /// The main body of the CardView
     public var body: some View {
         GeometryReader { geometry in
             // Calculate card size based on available width
@@ -144,13 +144,13 @@ public struct CardView: View {
     private func cardFace(style: CardDesignStyle) -> some View {
         ZStack {
             // Background shadow for depth
-            RoundedRectangle(cornerRadius: 0)
-                .fill(Color.black.opacity(0.08))
-                .offset(y: 3)
-                .blur(radius: 5)
+            RoundedRectangle(cornerRadius: CardViewConstants.cornerRadius)
+                .fill(Color.black.opacity(CardViewConstants.backgroundShadowOpacity))
+                .offset(y: CardViewConstants.backgroundShadowYOffset)
+                .blur(radius: CardViewConstants.backgroundShadowBlur)
             
             // Main card with enhanced 3D effects - make fully opaque
-            RoundedRectangle(cornerRadius: 0)
+            RoundedRectangle(cornerRadius: CardViewConstants.cornerRadius)
                 .fill(
                     LinearGradient(
                         gradient: Gradient(
@@ -165,15 +165,15 @@ public struct CardView: View {
                 )
                 .overlay(
                     // Add a solid background first to ensure opacity
-                    RoundedRectangle(cornerRadius: 0)
+                    RoundedRectangle(cornerRadius: CardViewConstants.cornerRadius)
                         .fill(card.style.primaryColor)
                 )
                 .overlay(
                     // Enhanced inner light reflection
-                    RoundedRectangle(cornerRadius: 0)
+                    RoundedRectangle(cornerRadius: CardViewConstants.cornerRadius)
                         .fill(
                             LinearGradient(
-                                gradient: Gradient(colors: [.white.opacity(0.35), .clear]),
+                                gradient: Gradient(colors: [.white.opacity(CardViewConstants.innerLightReflectionOpacity), .clear]),
                                 startPoint: .topLeading,
                                 endPoint: .center
                             )
@@ -189,8 +189,8 @@ public struct CardView: View {
                 )
                 .overlay(
                     // Card border with enhanced contrast
-                    RoundedRectangle(cornerRadius: 0)
-                        .stroke(Color.black.opacity(0.15), lineWidth: 0.7)
+                    RoundedRectangle(cornerRadius: CardViewConstants.cornerRadius)
+                        .stroke(Color.black.opacity(CardViewConstants.borderOpacity), lineWidth: CardViewConstants.borderLineWidth)
                 )
                 // Only apply stack collapse offset and rotation when scrolling
                 .offset(y: (isAnyCardFocused && !isFocused) ? CardDesign.Layout.unfocusedOffset * 0.3 : 0)
@@ -203,10 +203,10 @@ public struct CardView: View {
         }
         // Enhanced shadow effect
         .shadow(
-            color: Color.black.opacity(isFocused ? 0.25 : 0.15),
-            radius: isFocused ? 12 : 8,
+            color: Color.black.opacity(isFocused ? CardViewConstants.shadowFocusedOpacity : CardViewConstants.shadowUnfocusedOpacity),
+            radius: isFocused ? CardViewConstants.shadowFocusedRadius : CardViewConstants.shadowUnfocusedRadius,
             x: 0,
-            y: isFocused ? 6 : 4
+            y: isFocused ? CardViewConstants.shadowFocusedYOffset : CardViewConstants.shadowUnfocusedYOffset
         )
     }
     

@@ -1,26 +1,25 @@
-// Sources/Cardtier/Models/CardModel.swift
 import CoreLocation
 import Foundation
 import SwiftUI
 
-/// Contact information for a business card
+/// Stores contact details for a business card, such as email, phone, fax, website, and LinkedIn.
 public struct ContactInformation: Codable {
-    /// Email address
+    /// Email address (optional)
     public let email: String?
     
-    /// Phone number
+    /// Phone number (optional)
     public let phoneNumber: String?
     
-    /// Fax number
+    /// Fax number (optional)
     public let faxNumber: String?
     
-    /// Website URL
+    /// Website URL (optional)
     public let websiteURL: URL?
     
-    /// LinkedIn profile URL
+    /// LinkedIn profile URL (optional)
     public let linkedInURL: URL?
     
-    /// Creates contact information with optional fields
+    /// Initializes a new contact information object with all fields optional.
     public init(
         email: String? = nil,
         phoneNumber: String? = nil,
@@ -35,31 +34,31 @@ public struct ContactInformation: Codable {
         self.linkedInURL = linkedInURL
     }
     
-    /// Check if any contact information is available
+    /// Returns true if at least one contact field is present.
     public var hasAnyInformation: Bool {
         email != nil || phoneNumber != nil || faxNumber != nil ||
         websiteURL != nil || linkedInURL != nil
     }
 }
 
-/// Address information for a business card
+/// Stores address details for a business card, such as street, city, state, postal code, and country.
 public struct Address: Codable {
-    /// Street name and number
+    /// Street name and number (optional)
     public let street: String?
     
-    /// City name
+    /// City name (optional)
     public let city: String?
     
-    /// State or province
+    /// State or province (optional)
     public let state: String?
     
-    /// Postal or ZIP code
+    /// Postal or ZIP code (optional)
     public let postalCode: String?
     
-    /// Country
+    /// Country (optional)
     public let country: String?
     
-    /// Creates address information with optional fields
+    /// Initializes a new address object with all fields optional.
     public init(
         street: String? = nil,
         city: String? = nil,
@@ -74,18 +73,20 @@ public struct Address: Codable {
         self.country = country
     }
     
-    /// Check if any address information is available
+    /// Returns true if at least one address field is present.
     public var hasAddressInformation: Bool {
         street != nil || city != nil || state != nil ||
         postalCode != nil || country != nil
     }
     
-    /// Returns a formatted, multi-line address string
+    /// Returns a formatted, multi-line address string, or nil if no fields are present.
     public var formattedAddress: String? {
         var components: [String] = []
         
+        // Add street if available
         if let street = street { components.append(street) }
         
+        // Build city/state/postal line
         var cityLine = ""
         if let city = city { cityLine += city }
         if let state = state { cityLine += cityLine.isEmpty ? state : ", \(state)" }
@@ -94,27 +95,29 @@ public struct Address: Codable {
         }
         if !cityLine.isEmpty { components.append(cityLine) }
         
+        // Add country if available
         if let country = country { components.append(country) }
         
+        // Return joined string or nil if empty
         return components.isEmpty ? nil : components.joined(separator: "\n")
     }
 }
 
-/// Visual style for a business card
+/// Defines the visual style for a business card, including colors, font, and design type.
 public struct CardStyle: Codable {
-    /// Primary color for the card
+    /// Main color for the card background and elements.
     public let primaryColor: Color
     
-    /// Secondary color for the card
+    /// Secondary color for highlights or text (optional).
     public let secondaryColor: Color?
     
-    /// Font name for the card text
+    /// Font name for card text (optional).
     public let fontName: String?
     
-    /// Design style for the card (Modern, Minimal, etc.)
+    /// Design style (e.g., modern, minimal, traditional).
     public let designStyle: CardDesignType
     
-    /// Creates a card style
+    /// Initializes a new card style with optional secondary color and font.
     public init(
         primaryColor: Color = .white,
         secondaryColor: Color? = nil,
@@ -127,11 +130,12 @@ public struct CardStyle: Codable {
         self.designStyle = designStyle
     }
     
-    // For Codable support
+    // Coding keys for custom encoding/decoding of colors as hex strings.
     private enum CodingKeys: String, CodingKey {
         case primaryColorHex, secondaryColorHex, fontName, designStyle
     }
     
+    /// Encodes the style, converting colors to hex strings for serialization.
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(primaryColor.toHex, forKey: .primaryColorHex)
@@ -142,6 +146,7 @@ public struct CardStyle: Codable {
         try container.encode(designStyle, forKey: .designStyle)
     }
     
+    /// Decodes the style, converting hex strings back to Color.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let primaryHex = try container.decode(String.self, forKey: .primaryColorHex)
@@ -159,56 +164,56 @@ public struct CardStyle: Codable {
     }
 }
 
-/// Defines the overall design style of a card
+/// Enum for the overall design style of a card.
 public enum CardDesignType: String, Codable {
     case modern
     case minimal
     case traditional
-    // Add more design types here as needed
+    // Extend with more design types as needed
 }
 
-/// Represents a business card with professional information and metadata
+/// Represents a business card with all professional and visual information.
 public struct Card: Identifiable, Codable {
-    /// Unique identifier for the card
+    /// Unique identifier for the card.
     public let id: UUID
     
-    /// Full name of the person
+    /// Full name of the cardholder.
     public let name: String
     
-    /// Professional title (e.g., "CEO")
+    /// Professional title (e.g., "CEO", optional).
     public let title: String?
     
-    /// Role or position (e.g., "Executive Management")
+    /// Role or position (e.g., "Executive Management", optional).
     public let role: String?
     
-    /// Company or organization name
+    /// Company or organization name (optional).
     public let company: String?
     
-    /// Contact information (email, phone, etc.)
+    /// Contact information (email, phone, etc.).
     public let contactInformation: ContactInformation
     
-    /// Business/company address
+    /// Business address (optional).
     public let businessAddress: Address?
     
-    /// Personal/private address
+    /// Personal/private address (optional).
     public let personalAddress: Address?
     
-    /// Company slogan or tagline
+    /// Company slogan or tagline (optional).
     public let slogan: String?
     
-    /// Multiple logos or images to display on the card
+    /// Array of logos or images to display (optional).
     public let logos: [UIImage]?
     
-    /// Visual styling for the card
+    /// Visual styling for the card.
     public let style: CardStyle
     
-    /// Date when the card was collected
+    /// Date when the card was collected.
     public let collectionDate: Date
     
-    /// Geographic location where the card was collected
+    /// Geographic location where the card was collected.
     public let collectionLocation: CLLocationCoordinate2D
     
-    /// Creates a new business card with full details
+    /// Initializes a new business card with all details.
     public init(
         id: UUID = UUID(),
         name: String,
@@ -239,13 +244,14 @@ public struct Card: Identifiable, Codable {
         self.collectionLocation = collectionLocation
     }
     
-    // Custom Codable implementation for CLLocationCoordinate2D
+    // Coding keys for custom encoding/decoding, including location and logo images.
     private enum CodingKeys: String, CodingKey {
         case id, name, title, role, company, contactInformation
         case businessAddress, personalAddress, slogan, logos, style
         case collectionDate, latitude, longitude
     }
     
+    /// Encodes the card, converting images to Data and location to latitude/longitude.
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
@@ -258,15 +264,15 @@ public struct Card: Identifiable, Codable {
         try container.encode(personalAddress, forKey: .personalAddress)
         try container.encode(slogan, forKey: .slogan)
         
-        // Convert array of logos to array of Data
+        // Convert UIImage array to Data array for encoding
         if let logos = logos, !logos.isEmpty {
             var logoDataArray: [Data] = []
             for logo in logos {
                 if let imageData = logo.pngData() {
-                        logoDataArray.append(imageData)
-                    }
+                    logoDataArray.append(imageData)
                 }
-                try container.encode(logoDataArray, forKey: .logos)
+            }
+            try container.encode(logoDataArray, forKey: .logos)
         }
         
         try container.encode(style, forKey: .style)
@@ -275,6 +281,7 @@ public struct Card: Identifiable, Codable {
         try container.encode(collectionLocation.longitude, forKey: .longitude)
     }
     
+    /// Decodes the card, converting Data arrays back to UIImage and reconstructing the location.
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
@@ -287,7 +294,7 @@ public struct Card: Identifiable, Codable {
         personalAddress = try container.decodeIfPresent(Address.self, forKey: .personalAddress)
         slogan = try container.decodeIfPresent(String.self, forKey: .slogan)
         
-        // Convert array of Data back to array of UIImage
+        // Convert Data array back to UIImage array
         if let logoDataArray = try container.decodeIfPresent([Data].self, forKey: .logos) {
             var decodedLogos: [UIImage] = []
             for logoData in logoDataArray {
@@ -303,70 +310,9 @@ public struct Card: Identifiable, Codable {
         style = try container.decode(CardStyle.self, forKey: .style)
         collectionDate = try container.decode(Date.self, forKey: .collectionDate)
         
-        // Decode latitude and longitude to create CLLocationCoordinate2D
+        // Decode latitude and longitude to CLLocationCoordinate2D
         let latitude = try container.decode(Double.self, forKey: .latitude)
         let longitude = try container.decode(Double.self, forKey: .longitude)
         collectionLocation = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    }
-}
-
-// MARK: - Color Helpers
-extension Color {
-    /// Initialize a Color from a hex string
-    public init?(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        
-        Scanner(string: hex).scanHexInt64(&int)
-        
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (r, g, b, a) = ((int >> 8) & 0xF, (int >> 4) & 0xF, int & 0xF, 0xF)
-            self.init(
-                .sRGB,
-                red: Double(r) / 15,
-                green: Double(g) / 15,
-                blue: Double(b) / 15,
-                opacity: Double(a) / 15
-            )
-        case 6: // RGB (24-bit)
-            (r, g, b, a) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF, 0xFF)
-            self.init(
-                .sRGB,
-                red: Double(r) / 255,
-                green: Double(g) / 255,
-                blue: Double(b) / 255,
-                opacity: Double(a) / 255
-            )
-        case 8: // RGBA (32-bit)
-            (r, g, b, a) = ((int >> 24) & 0xFF, (int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
-            self.init(
-                .sRGB,
-                red: Double(r) / 255,
-                green: Double(g) / 255,
-                blue: Double(b) / 255,
-                opacity: Double(a) / 255
-            )
-        default:
-            return nil
-        }
-    }
-    
-    /// Convert Color to hex string
-    var toHex: String {
-        let components = UIColor(self).cgColor.components
-        let r: CGFloat = components?[0] ?? 0.0
-        let g: CGFloat = components?[1] ?? 0.0
-        let b: CGFloat = components?[2] ?? 0.0
-        let a: CGFloat = components?[3] ?? 0.0
-        
-        return String(
-            format: "#%02X%02X%02X%02X",
-            Int(r * 255),
-            Int(g * 255),
-            Int(b * 255),
-            Int(a * 255)
-        )
     }
 }

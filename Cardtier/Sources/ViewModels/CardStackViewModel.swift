@@ -109,7 +109,7 @@ private static var sampleCards: [Card] = [
         style: CardStyle(
             primaryColor: .white,
             secondaryColor: Color(red: 0.8, green: 0.3, blue: 0.3, opacity: 1.0),
-            fontName: "Palatino-Italic",
+            fontName: "Palatino-Italic ",
             designStyle: .minimal
         ),
         collectionDate: Date(),
@@ -126,6 +126,7 @@ private static var sampleCards: [Card] = [
             websiteURL: URL(string: "https://globalindustries.co.uk"),
             linkedInURL: URL(string: "https://linkedin.com/in/alicejohnson")
         ),
+        slogan: "F*ck bitches, get data",
         style: CardStyle(
             primaryColor: .red,
             secondaryColor: .black,
