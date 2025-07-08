@@ -1,10 +1,16 @@
 import SwiftUI
+import Contacts
 
 /// A sheet view displaying detailed information about a card.
 /// Shows card header, contact info, address, and collection data.
 struct CardInfoSheet: View {
     let card: Card
     @Binding var isPresented: Bool
+    
+    @State private var showSaveSuccess = false
+    @State private var showSaveError   = false
+    @State private var saveErrorMessage = ""
+
 
     var body: some View {
         ScrollView {
@@ -29,9 +35,12 @@ struct CardInfoSheet: View {
             }
             .padding(CardDesign.Padding.standard)
         }
-        // Add close button at the bottom, respecting safe area
+        // Add close button and addtocontact button at the bottom, respecting safe area
         .safeAreaInset(edge: .bottom) {
-            closeButton
+            VStack(spacing: 0) {
+                    addToContactsButton
+                    closeButton
+                }
         }
         .background(Color(.systemBackground))
     }
@@ -237,6 +246,46 @@ struct CardInfoSheet: View {
             )
             .padding(.vertical, CardDesign.Padding.small)
     }
+    
+    
+    /// addtocontact  button
+    private var addToContactsButton: some View {
+      Button(action: {
+        ContactManager.save(card: card) { result in
+          switch result {
+          case .success:
+            showSaveSuccess = true
+          case .failure(let err):
+            saveErrorMessage = err.localizedDescription
+            showSaveError = true
+          }
+        }
+      }) {
+        Text("Add to Contacts")
+          .font(CardElements.customFont(
+            name: card.style.fontName,
+            size: CardInfoSheetConstants.titleFontSize,
+            weight: .medium
+          ))
+          .frame(maxWidth: .infinity)
+          .padding(.vertical, CardDesign.Padding.medium)
+      }
+      .buttonStyle(.borderedProminent)
+      .tint(card.style.secondaryColor ?? CardDesign.Colors.accent)
+      .padding(.horizontal, CardDesign.Padding.standard)
+      .padding(.bottom, CardDesign.Padding.small)
+      .alert("Contact added", isPresented: $showSaveSuccess) {
+        Button("OK", role: .cancel) { }
+      } message: {
+        Text("The contact was successfully created.")
+      }
+      .alert("Error", isPresented: $showSaveError) {
+        Button("OK", role: .cancel) { }
+      } message: {
+        Text(saveErrorMessage)
+      }
+    }
+
 
     /// Close button at the bottom of the sheet
     private var closeButton: some View {
