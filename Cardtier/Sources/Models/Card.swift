@@ -131,9 +131,9 @@ public struct CardStyle: Codable {
 
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(primaryColor.toHex, forKey: .primaryColorHex)
+    try container.encode(primaryColor.hexString, forKey: .primaryColorHex)
     if let secondaryColor = secondaryColor {
-      try container.encode(secondaryColor.toHex, forKey: .secondaryColorHex)
+      try container.encode(secondaryColor.hexString, forKey: .secondaryColorHex)
     }
     try container.encode(fontName, forKey: .fontName)
     try container.encode(designStyle, forKey: .designStyle)
@@ -142,11 +142,11 @@ public struct CardStyle: Codable {
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let primaryHex = try container.decode(String.self, forKey: .primaryColorHex)
-    primaryColor = Color(hex: primaryHex) ?? .white
+    primaryColor = Color(hexString: primaryHex) ?? .white
 
     if container.contains(.secondaryColorHex) {
       let secondaryHex = try container.decode(String.self, forKey: .secondaryColorHex)
-      secondaryColor = Color(hex: secondaryHex)
+      secondaryColor = Color(hexString: secondaryHex)
     } else {
       secondaryColor = nil
     }
@@ -269,69 +269,5 @@ public struct Card: Identifiable, Codable {
     let latitude = try container.decode(Double.self, forKey: .latitude)
     let longitude = try container.decode(Double.self, forKey: .longitude)
     collectionLocation = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-  }
-}
-
-// MARK: - Color Helpers
-extension Color {
-  /// Initialize a Color from a hex string
-  public init?(hex: String) {
-    let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-    var int: UInt64 = 0
-
-    Scanner(string: hex).scanHexInt64(&int)
-
-    let a: UInt64
-    let r: UInt64
-    let g: UInt64
-    let b: UInt64
-    switch hex.count {
-    case 3:
-      (r, g, b, a) = ((int >> 8) & 0xF, (int >> 4) & 0xF, int & 0xF, 0xF)
-      self.init(
-        .sRGB,
-        red: Double(r) / 15,
-        green: Double(g) / 15,
-        blue: Double(b) / 15,
-        opacity: Double(a) / 15
-      )
-    case 6:
-      (r, g, b, a) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF, 0xFF)
-      self.init(
-        .sRGB,
-        red: Double(r) / 255,
-        green: Double(g) / 255,
-        blue: Double(b) / 255,
-        opacity: Double(a) / 255
-      )
-    case 8:
-      (r, g, b, a) = ((int >> 24) & 0xFF, (int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
-      self.init(
-        .sRGB,
-        red: Double(r) / 255,
-        green: Double(g) / 255,
-        blue: Double(b) / 255,
-        opacity: Double(a) / 255
-      )
-    default:
-      return nil
-    }
-  }
-
-  /// Convert Color to hex string
-  var toHex: String {
-    let components = UIColor(self).cgColor.components
-    let r: CGFloat = components?[0] ?? 0.0
-    let g: CGFloat = components?[1] ?? 0.0
-    let b: CGFloat = components?[2] ?? 0.0
-    let a: CGFloat = components?[3] ?? 0.0
-
-    return String(
-      format: "#%02X%02X%02X%02X",
-      Int(r * 255),
-      Int(g * 255),
-      Int(b * 255),
-      Int(a * 255)
-    )
   }
 }

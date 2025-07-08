@@ -4,7 +4,7 @@ public struct ContentView: View {
   @StateObject private var viewModel = CardStackViewModel(withSampleData: true)
 
   @State private var scrollPosition: CGPoint = .zero
-  @State private var scrollReader: ScrollViewProxy? = nil
+  @State private var scrollReader: ScrollViewProxy?
 
   private let stackAnimation = Animation.spring(
     response: 0.5, dampingFraction: 0.8, blendDuration: 0.3)
