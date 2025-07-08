@@ -29,7 +29,7 @@ public class CardStackViewModel: ObservableObject {
 
   /// Resets the focused card state
   public func resetFocusedCard() {
-    withAnimation(CardDesign.Animation.focusTransition) {
+    withAnimation(.cardFocus) {
       focusedCardID = nil
       flipped = [:]
       showInfo = [:]

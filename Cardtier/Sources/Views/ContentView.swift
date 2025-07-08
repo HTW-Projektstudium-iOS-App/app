@@ -6,9 +6,6 @@ public struct ContentView: View {
   @State private var scrollPosition: CGPoint = .zero
   @State private var scrollReader: ScrollViewProxy?
 
-  private let stackAnimation = Animation.spring(
-    response: 0.5, dampingFraction: 0.8, blendDuration: 0.3)
-
   public init() {}
 
   public var body: some View {
@@ -20,7 +17,7 @@ public struct ContentView: View {
     .background(Color(UIColor.systemGroupedBackground))
     .onChange(of: viewModel.focusedCardID) { _, newValue in
       if newValue != nil {
-        withAnimation(stackAnimation) {
+        withAnimation(.cardStack) {
           scrollReader?.scrollTo("stackAnchor", anchor: .top)
         }
       }
@@ -37,7 +34,7 @@ public struct ContentView: View {
             .contentShape(Rectangle())
             .onTapGesture {
               if viewModel.focusedCardID != nil {
-                withAnimation(stackAnimation) {
+                withAnimation(.cardStack) {
                   viewModel.resetFocusedCard()
                 }
               }
@@ -74,7 +71,7 @@ public struct ContentView: View {
             }
           }
           .padding(.top, CardDesign.Layout.stackTopPadding)
-          .animation(stackAnimation, value: viewModel.focusedCardID)
+          .animation(.cardStack, value: viewModel.focusedCardID)
         }
       }
       .onAppear {
@@ -85,7 +82,7 @@ public struct ContentView: View {
           .onChanged { _ in
             if !viewModel.isDragging && viewModel.focusedCardID != nil {
               viewModel.isDragging = true
-              withAnimation(stackAnimation) {
+              withAnimation(.cardStack) {
                 viewModel.resetFocusedCard()
               }
             }
@@ -127,7 +124,7 @@ public struct ContentView: View {
           anchor: .center,
           perspective: 0.1
         )
-        .animation(stackAnimation, value: viewModel.focusedCardID)
+        .animation(.cardStack, value: viewModel.focusedCardID)
       }
     }
   }

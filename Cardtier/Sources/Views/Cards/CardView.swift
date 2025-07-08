@@ -24,12 +24,6 @@ public struct CardView: View {
   /// When a card is focused, it receives visual emphasis and interaction focus
   @Binding var focusedCardID: UUID?
 
-  /// Animation for card flipping transitions
-  private let flipAnimation = CardDesign.Animation.flipTransition
-
-  /// Animation for card selection/deselection
-  private let selectionAnimation = CardDesign.Animation.selectionTransition
-
   /// Determines if this specific card is currently focused
   /// Compares this card's ID with the focused card ID
   private var isFocused: Bool {
@@ -116,11 +110,11 @@ public struct CardView: View {
       .offset(y: stackCollapseOffset)
       .onTapGesture {
         if isFocused {
-          withAnimation(flipAnimation) {
+          withAnimation(.cardFlip) {
             isFlipped.toggle()
           }
         } else {
-          withAnimation(selectionAnimation) {
+          withAnimation(.cardSelection) {
             focusedCardID = card.id
           }
         }

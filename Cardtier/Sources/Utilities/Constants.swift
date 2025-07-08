@@ -2,25 +2,6 @@ import SwiftUI
 
 /// Design constants used throughout the card stack implementation
 public enum CardDesign {
-  /// Animation configurations
-  public enum Animation {
-    /// Standard animation for card focus/unfocus transitions
-    public static let focusTransition: SwiftUI.Animation = .spring(
-      response: 0.3, dampingFraction: 0.7)
-
-    /// Animation for card flip transitions
-    public static let flipTransition: SwiftUI.Animation = .spring(
-      response: 0.5, dampingFraction: 0.7)
-
-    /// Animation for card selection/deselection
-    public static let selectionTransition: SwiftUI.Animation = .spring(
-      response: 0.6, dampingFraction: 0.75)
-
-    /// Animation for the entire card stack
-    public static let stackAnimation: SwiftUI.Animation = .spring(
-      response: 0.5, dampingFraction: 0.8, blendDuration: 0.3)
-  }
-
   /// Dimensions and layout values for card stack
   public enum Layout {
     /// Height of each card in points
