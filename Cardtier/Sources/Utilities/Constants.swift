@@ -1,4 +1,3 @@
-// Sources/Cardtier/Utilities/Constants.swift
 import SwiftUI
 
 /// Design constants used throughout the card stack implementation

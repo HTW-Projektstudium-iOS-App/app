@@ -1,4 +1,3 @@
-// Sources/Cardtier/Models/CardModel.swift
 import CoreLocation
 import Foundation
 import SwiftUI
@@ -126,7 +125,6 @@ public struct CardStyle: Codable {
     self.designStyle = designStyle
   }
 
-  // For Codable support
   private enum CodingKeys: String, CodingKey {
     case primaryColorHex, secondaryColorHex, fontName, designStyle
   }
@@ -162,7 +160,6 @@ public struct CardStyle: Codable {
 public enum CardDesignType: String, Codable {
   case modern
   case minimal
-  // Add more design types here as needed
 }
 
 /// Represents a business card with professional information and metadata
@@ -232,7 +229,6 @@ public struct Card: Identifiable, Codable {
     self.collectionLocation = collectionLocation
   }
 
-  // Custom Codable implementation for CLLocationCoordinate2D
   private enum CodingKeys: String, CodingKey {
     case id, name, title, role, company, contactInformation
     case businessAddress, personalAddress, slogan, style
@@ -270,7 +266,6 @@ public struct Card: Identifiable, Codable {
     style = try container.decode(CardStyle.self, forKey: .style)
     collectionDate = try container.decode(Date.self, forKey: .collectionDate)
 
-    // Decode latitude and longitude to create CLLocationCoordinate2D
     let latitude = try container.decode(Double.self, forKey: .latitude)
     let longitude = try container.decode(Double.self, forKey: .longitude)
     collectionLocation = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -291,7 +286,7 @@ extension Color {
     let g: UInt64
     let b: UInt64
     switch hex.count {
-    case 3:  // RGB (12-bit)
+    case 3:
       (r, g, b, a) = ((int >> 8) & 0xF, (int >> 4) & 0xF, int & 0xF, 0xF)
       self.init(
         .sRGB,
@@ -300,7 +295,7 @@ extension Color {
         blue: Double(b) / 15,
         opacity: Double(a) / 15
       )
-    case 6:  // RGB (24-bit)
+    case 6:
       (r, g, b, a) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF, 0xFF)
       self.init(
         .sRGB,
@@ -309,7 +304,7 @@ extension Color {
         blue: Double(b) / 255,
         opacity: Double(a) / 255
       )
-    case 8:  // RGBA (32-bit)
+    case 8:
       (r, g, b, a) = ((int >> 24) & 0xFF, (int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
       self.init(
         .sRGB,

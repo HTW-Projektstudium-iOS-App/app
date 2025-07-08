@@ -1,6 +1,5 @@
 import Combine
 import CoreLocation
-// Sources/Cardtier/ViewModels/CardStackViewModel.swift
 import SwiftUI
 
 /// View model to manage the card stack state and operations

@@ -1,14 +1,10 @@
-// Sources/Cardtier/Views/CardView.swift
 import SwiftUI
 
-/// Defines different card presentation styles
-/// Each style represents a specific card design for front and back sides
 public enum CardDesignStyle {
-  case modernFront  // Modern design for the front side
-  case modernBack  // Modern design for the back side
-  case minimalFront  // Minimal design for the front side
-  case minimalBack  // Minimal design for the back side
-  // More styles can be added here for future design options
+  case modernFront
+  case modernBack
+  case minimalFront
+  case minimalBack
 }
 
 /// Displays a single business card that can be flipped and shows metadata
@@ -84,14 +80,11 @@ public struct CardView: View {
 
   public var body: some View {
     GeometryReader { geometry in
-      // Calculate card size based on available width
       let cardWidth = min(
         geometry.size.width * CardDesign.Layout.cardWidthMultiplier, CardDesign.Layout.maxCardWidth)
       let cardHeight = cardWidth / CardDesign.Layout.cardAspectRatio
 
       ZStack {
-        // Front side of the card - using style from card model
-        // Becomes invisible and rotates when flipped
         cardFace(style: designStyleForCard(isFront: true))
           .opacity(isFlipped ? 0 : 1)
           .rotation3DEffect(
@@ -100,8 +93,6 @@ public struct CardView: View {
             perspective: 0.3
           )
 
-        // Back side of the card - using style from card model
-        // Becomes visible and rotates into view when flipped
         cardFace(style: designStyleForCard(isFront: false))
           .opacity(isFlipped ? 1 : 0)
           .rotation3DEffect(
@@ -111,8 +102,8 @@ public struct CardView: View {
           )
       }
       .frame(width: cardWidth, height: cardHeight)
-      .position(x: geometry.size.width / 2, y: geometry.size.height / 2)  // Center in container
-      .scaleEffect(isFocused ? CardDesign.Layout.focusedScale : 1.0)  // Slightly enlarge focused card
+      .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+      .scaleEffect(isFocused ? CardDesign.Layout.focusedScale : 1.0)
       .blur(
         radius: isAnyCardFocused && !isFocused
           ? CardDesign.Effects.unfocusedBlur : CardDesign.Effects.focusedBlur
@@ -122,28 +113,24 @@ public struct CardView: View {
           ? (isFocused
             ? CardDesign.Effects.focusedBrightness : CardDesign.Effects.unfocusedBrightness) : 0
       )
-      .offset(y: stackCollapseOffset)  // Move unfocused cards down
+      .offset(y: stackCollapseOffset)
       .onTapGesture {
         if isFocused {
-          // If already focused, flip the card
           withAnimation(flipAnimation) {
             isFlipped.toggle()
           }
         } else {
-          // If not focused, make this card the focused one
           withAnimation(selectionAnimation) {
             focusedCardID = card.id
           }
         }
       }
       .onChange(of: focusedCardID) { oldID, newID in
-        // Reset flip state when focus changes to a different card
         if newID != card.id {
           isFlipped = false
         }
       }
       .sheet(isPresented: $showInfo) {
-        // Display detailed info sheet when showInfo is true
         CardInfoSheet(card: card, isPresented: $showInfo)
       }
     }
@@ -153,7 +140,7 @@ public struct CardView: View {
   /// Includes styling like background, shadow, and content based on design style
   private func cardFace(style: CardDesignStyle) -> some View {
     RoundedRectangle(cornerRadius: CardDesign.Layout.cornerRadius)
-      .fill(card.style.primaryColor)  // Use card's primary color for background
+      .fill(card.style.primaryColor)
       .shadow(
         radius: isFocused
           ? CardDesign.Effects.focusedShadowRadius : CardDesign.Effects.unfocusedShadowRadius,
@@ -397,12 +384,10 @@ private struct CardInfoSheet: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: CardDesign.Padding.large) {
-      // Header with name
       Text(card.name)
         .font(CardDesign.Typography.headlineFont)
         .foregroundColor(CardDesign.Colors.primary)
 
-      // Contact information section - only displayed if information exists
       if card.contactInformation.hasAnyInformation {
         Group {
           Text("Contact Information")
@@ -410,7 +395,6 @@ private struct CardInfoSheet: View {
             .bold()
             .foregroundColor(CardDesign.Colors.primary)
 
-          // List of contact details
           VStack(alignment: .leading, spacing: CardDesign.Padding.medium - 2) {
             if let email = card.contactInformation.email {
               Text("Email: \(email)")
@@ -433,11 +417,10 @@ private struct CardInfoSheet: View {
                 .foregroundColor(CardDesign.Colors.primary)
             }
           }
-          Divider()  // Visual separator
+          Divider()
         }
       }
 
-      // Address information - only displayed if information exists
       if let address = card.businessAddress, address.hasAnyInformation {
         Group {
           Text("Business Address")
@@ -448,11 +431,10 @@ private struct CardInfoSheet: View {
           Text(address.formattedAddress ?? "")
             .foregroundColor(CardDesign.Colors.primary)
 
-          Divider()  // Visual separator
+          Divider()
         }
       }
 
-      // Collection metadata - when and where the card was collected
       Group {
         Text("Collection Data")
           .font(CardDesign.Typography.subheadlineFont)
@@ -468,19 +450,18 @@ private struct CardInfoSheet: View {
         .foregroundColor(CardDesign.Colors.primary)
       }
 
-      Spacer()  // Push content to top, button to bottom
+      Spacer()
 
-      // Close button
       Button("Close") {
         isPresented = false
       }
-      .frame(maxWidth: .infinity)  // Full width button
+      .frame(maxWidth: .infinity)
       .padding(.vertical, CardDesign.Padding.medium)
       .background(CardDesign.Colors.accent)
       .foregroundColor(.white)
       .cornerRadius(8)
     }
-    .padding(CardDesign.Padding.standard)  // Padding around all content
-    .background(Color(.systemBackground))  // System background color for light/dark mode
+    .padding(CardDesign.Padding.standard)
+    .background(Color(.systemBackground))
   }
 }
