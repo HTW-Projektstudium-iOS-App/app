@@ -80,21 +80,16 @@ public struct Address: Codable {
 
   /// Returns a formatted, multi-line address string
   public var formattedAddress: String? {
-    var components: [String] = []
+    let cityStatePostal = "\(city ?? "")\(state != nil ? ", \(state!)" : "") \(postalCode ?? "")"
 
-    if let street = street { components.append(street) }
-
-    var cityLine = ""
-    if let city = city { cityLine += city }
-    if let state = state { cityLine += cityLine.isEmpty ? state : ", \(state)" }
-    if let postalCode = postalCode {
-      cityLine += cityLine.isEmpty ? postalCode : " \(postalCode)"
-    }
-    if !cityLine.isEmpty { components.append(cityLine) }
-
-    if let country = country { components.append(country) }
-
-    return components.isEmpty ? nil : components.joined(separator: "\n")
+    return [
+      street ?? "",
+      cityStatePostal,
+      country ?? "",
+    ]
+    .map { $0.trimmingCharacters(in: .whitespaces) }
+    .filter { !$0.isEmpty }
+    .joined(separator: "\n")
   }
 }
 
@@ -131,28 +126,25 @@ public struct CardStyle: Codable {
 
   public func encode(to encoder: Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
+
     try container.encode(primaryColor.hexString, forKey: .primaryColorHex)
-    if let secondaryColor = secondaryColor {
-      try container.encode(secondaryColor.hexString, forKey: .secondaryColorHex)
-    }
+    try container.encodeIfPresent(secondaryColor?.hexString, forKey: .secondaryColorHex)
+
     try container.encode(fontName, forKey: .fontName)
     try container.encode(designStyle, forKey: .designStyle)
   }
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+
     let primaryHex = try container.decode(String.self, forKey: .primaryColorHex)
-    primaryColor = Color(hexString: primaryHex) ?? .white
+    self.primaryColor = Color(hexString: primaryHex) ?? .white
 
-    if container.contains(.secondaryColorHex) {
-      let secondaryHex = try container.decode(String.self, forKey: .secondaryColorHex)
-      secondaryColor = Color(hexString: secondaryHex)
-    } else {
-      secondaryColor = nil
-    }
+    let secondaryHex = try container.decodeIfPresent(String.self, forKey: .secondaryColorHex)
+    self.secondaryColor = Color(hexString: secondaryHex ?? "")
 
-    fontName = try container.decodeIfPresent(String.self, forKey: .fontName)
-    designStyle = try container.decode(CardDesignType.self, forKey: .designStyle)
+    self.fontName = try container.decodeIfPresent(String.self, forKey: .fontName)
+    self.designStyle = try container.decode(CardDesignType.self, forKey: .designStyle)
   }
 }
 
@@ -197,8 +189,13 @@ public struct Card: Identifiable, Codable {
   /// Date when the card was collected
   public let collectionDate: Date
 
+  private let collectionLatitude: Double
+  private let collectionLongitude: Double
+
   /// Geographic location where the card was collected
-  public let collectionLocation: CLLocationCoordinate2D
+  public var collectionLocation: CLLocationCoordinate2D {
+    CLLocationCoordinate2D(latitude: collectionLatitude, longitude: collectionLongitude)
+  }
 
   /// Creates a new business card with full details
   public init(
@@ -226,48 +223,7 @@ public struct Card: Identifiable, Codable {
     self.slogan = slogan
     self.style = style
     self.collectionDate = collectionDate
-    self.collectionLocation = collectionLocation
-  }
-
-  private enum CodingKeys: String, CodingKey {
-    case id, name, title, role, company, contactInformation
-    case businessAddress, personalAddress, slogan, style
-    case collectionDate, latitude, longitude
-  }
-
-  public func encode(to encoder: Encoder) throws {
-    var container = encoder.container(keyedBy: CodingKeys.self)
-    try container.encode(id, forKey: .id)
-    try container.encode(name, forKey: .name)
-    try container.encode(title, forKey: .title)
-    try container.encode(role, forKey: .role)
-    try container.encode(company, forKey: .company)
-    try container.encode(contactInformation, forKey: .contactInformation)
-    try container.encode(businessAddress, forKey: .businessAddress)
-    try container.encode(personalAddress, forKey: .personalAddress)
-    try container.encode(slogan, forKey: .slogan)
-    try container.encode(style, forKey: .style)
-    try container.encode(collectionDate, forKey: .collectionDate)
-    try container.encode(collectionLocation.latitude, forKey: .latitude)
-    try container.encode(collectionLocation.longitude, forKey: .longitude)
-  }
-
-  public init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: CodingKeys.self)
-    id = try container.decode(UUID.self, forKey: .id)
-    name = try container.decode(String.self, forKey: .name)
-    title = try container.decodeIfPresent(String.self, forKey: .title)
-    role = try container.decodeIfPresent(String.self, forKey: .role)
-    company = try container.decodeIfPresent(String.self, forKey: .company)
-    contactInformation = try container.decode(ContactInformation.self, forKey: .contactInformation)
-    businessAddress = try container.decodeIfPresent(Address.self, forKey: .businessAddress)
-    personalAddress = try container.decodeIfPresent(Address.self, forKey: .personalAddress)
-    slogan = try container.decodeIfPresent(String.self, forKey: .slogan)
-    style = try container.decode(CardStyle.self, forKey: .style)
-    collectionDate = try container.decode(Date.self, forKey: .collectionDate)
-
-    let latitude = try container.decode(Double.self, forKey: .latitude)
-    let longitude = try container.decode(Double.self, forKey: .longitude)
-    collectionLocation = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    self.collectionLatitude = collectionLocation.latitude
+    self.collectionLongitude = collectionLocation.longitude
   }
 }
