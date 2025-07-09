@@ -1,7 +1,9 @@
 import SwiftUI
 
 struct ContentView: View {
-  @StateObject private var viewModel = CardStackViewModel(withSampleData: true)
+  @State private var cards: [Card] = Card.sampleCards
+  @State private var focusedCardID: UUID?
+  private var focusedCard: Card? { cards.first(where: { $0.id == focusedCardID }) }
 
   @State private var scrollPosition: CGPoint = .zero
   @State private var scrollReader: ScrollViewProxy?
@@ -17,7 +19,7 @@ struct ContentView: View {
       focusedCardView
     }
     .background(Color(UIColor.systemGroupedBackground))
-    .onChange(of: viewModel.focusedCardID) { _, newValue in
+    .onChange(of: focusedCardID) { _, newValue in
       if newValue != nil {
         withAnimation(.cardStack) {
           scrollReader?.scrollTo("stackAnchor", anchor: .top)
@@ -35,9 +37,9 @@ struct ContentView: View {
           Color.clear
             .contentShape(Rectangle())
             .onTapGesture {
-              if viewModel.focusedCardID != nil {
-                withAnimation(.cardStack) {
-                  viewModel.resetFocusedCard()
+              if focusedCardID != nil {
+                withAnimation(.cardFocus) {
+                  focusedCardID = nil
                 }
               }
             }
@@ -46,14 +48,14 @@ struct ContentView: View {
             // Invisible spacer that creates room at the top when a card is focused
             // Pushes the card stack down to make space for the focused card
             Color.clear
-              .frame(height: viewModel.focusedCardID != nil ? 250 : 0)
+              .frame(height: focusedCardID != nil ? 250 : 0)
               .id("stackAnchor")
 
-            ForEach(Array(viewModel.cards.enumerated()), id: \.element.id) { index, card in
-              if card.id != viewModel.focusedCardID {
+            ForEach(cards.enumerated(), id: \.element.id) { index, card in
+              if card.id != focusedCardID {
                 CardView(
                   card: card,
-                  focusedCardID: $viewModel.focusedCardID
+                  focusedCardID: $focusedCardID
                 )
                 .frame(height: CardConstants.Layout.cardHeight)
                 .padding(.horizontal, CardConstants.Layout.horizontalPadding)
@@ -71,7 +73,7 @@ struct ContentView: View {
             }
           }
           .padding(.top, CardConstants.Layout.stackTopPadding)
-          .animation(.cardStack, value: viewModel.focusedCardID)
+          .animation(.cardStack, value: focusedCardID)
         }
       }
       .onAppear {
@@ -80,10 +82,10 @@ struct ContentView: View {
       .simultaneousGesture(
         DragGesture(minimumDistance: CardConstants.Layout.dragMinDistance, coordinateSpace: .local)
           .onChanged { _ in
-            if !isDragging && viewModel.focusedCardID != nil {
+            if !isDragging && focusedCardID != nil {
               isDragging = true
-              withAnimation(.cardStack) {
-                viewModel.resetFocusedCard()
+              withAnimation(.cardFocus) {
+                focusedCardID = nil
               }
             }
           }
@@ -96,10 +98,10 @@ struct ContentView: View {
 
   private var focusedCardView: some View {
     Group {
-      if let card = viewModel.focusedCard {
+      if let card = focusedCard {
         CardView(
           card: card,
-          focusedCardID: $viewModel.focusedCardID
+          focusedCardID: $focusedCardID
         )
         .frame(height: CardConstants.Layout.cardHeight)
         .padding(.horizontal, CardConstants.Layout.horizontalPadding)
@@ -122,7 +124,7 @@ struct ContentView: View {
           anchor: .center,
           perspective: 0.1
         )
-        .animation(.cardStack, value: viewModel.focusedCardID)
+        .animation(.cardStack, value: focusedCardID)
       }
     }
   }
