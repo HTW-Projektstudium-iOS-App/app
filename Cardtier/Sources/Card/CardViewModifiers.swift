@@ -5,7 +5,7 @@ private struct BaseCardModifier: ViewModifier {
 
   func body(content: Content) -> some View {
     content
-      .frame(height: 180)
+      .aspectRatio(1.6, contentMode: .fit)
       .padding(.horizontal, 20)
       .transition(
         .asymmetric(

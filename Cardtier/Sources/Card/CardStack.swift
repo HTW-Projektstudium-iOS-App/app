@@ -5,7 +5,6 @@ struct CardStack: View {
   @State private var focusedCardID: UUID?
   private var focusedCard: Card? { cards.first(where: { $0.id == focusedCardID }) }
 
-  @State private var scrollPosition: CGPoint = .zero
   @State private var scrollReader: ScrollViewProxy?
 
   @State private var isDragging: Bool = false
@@ -44,7 +43,7 @@ struct CardStack: View {
                 }
               }
             }
-            .padding(.top, CardConstants.Layout.stackTopPadding)
+            .padding(.top, 260)
             .animation(.cardStack, value: focusedCardID)
           }
         }
@@ -52,7 +51,7 @@ struct CardStack: View {
           scrollReader = proxy
         }
         .simultaneousGesture(
-          DragGesture(minimumDistance: CardConstants.Layout.dragMinDistance, coordinateSpace: .local)
+          DragGesture(minimumDistance: 1, coordinateSpace: .local)
             .onChanged { _ in
               if !isDragging && focusedCardID != nil {
                 isDragging = true

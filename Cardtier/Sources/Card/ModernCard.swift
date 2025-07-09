@@ -1,8 +1,24 @@
 import SwiftUI
 
+struct ModernCard: View {
+  let card: Card
+  let side: CardSide
+
+  let showInfoAction: () -> Void
+
+  var body: some View {
+    switch side {
+    case .front:
+      ModernCardFront(card: card, showInfoAction: showInfoAction)
+    case .back:
+      ModernCardBack(card: card, showInfoAction: showInfoAction)
+    }
+  }
+}
+
 /// Modern design for front card face
 /// Features name, title, and company with left-aligned layout
-struct ModernCardFront: View {
+private struct ModernCardFront: View {
   let card: Card
   let showInfoAction: () -> Void
 
@@ -48,7 +64,7 @@ struct ModernCardFront: View {
 
 /// Modern design for back card face
 /// Features contact information, address, and slogan with left-aligned layout
-struct ModernCardBack: View {
+private struct ModernCardBack: View {
   let card: Card
   let showInfoAction: () -> Void
 

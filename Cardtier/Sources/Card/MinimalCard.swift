@@ -1,5 +1,21 @@
 import SwiftUI
 
+struct MinimalCard: View {
+  let card: Card
+  let side: CardSide
+
+  let showInfoAction: () -> Void
+
+  var body: some View {
+    switch side {
+    case .front:
+      MinimalCardFront(card: card, showInfoAction: showInfoAction)
+    case .back:
+      MinimalCardBack(card: card, showInfoAction: showInfoAction)
+    }
+  }
+}
+
 /// Minimal design for front card face
 /// Simplified, centered layout with just name and title
 struct MinimalCardFront: View {
