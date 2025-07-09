@@ -39,7 +39,7 @@ public struct CardView: View {
   /// Additional vertical offset for non-focused cards when a card is selected
   /// Creates a "stack collapse" effect where unfocused cards move down
   private var stackCollapseOffset: CGFloat {
-    isAnyCardFocused && !isFocused ? CardDesign.Layout.unfocusedOffset : 0
+    isAnyCardFocused && !isFocused ? CardConstants.Layout.unfocusedOffset : 0
   }
 
   /// Creates a new card view
@@ -75,8 +75,8 @@ public struct CardView: View {
   public var body: some View {
     GeometryReader { geometry in
       let cardWidth = min(
-        geometry.size.width * CardDesign.Layout.cardWidthMultiplier, CardDesign.Layout.maxCardWidth)
-      let cardHeight = cardWidth / CardDesign.Layout.cardAspectRatio
+        geometry.size.width * CardConstants.Layout.cardWidthMultiplier, CardConstants.Layout.maxCardWidth)
+      let cardHeight = cardWidth / CardConstants.Layout.cardAspectRatio
 
       ZStack {
         cardFace(style: designStyleForCard(isFront: true))
@@ -97,15 +97,15 @@ public struct CardView: View {
       }
       .frame(width: cardWidth, height: cardHeight)
       .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
-      .scaleEffect(isFocused ? CardDesign.Layout.focusedScale : 1.0)
+      .scaleEffect(isFocused ? CardConstants.Layout.focusedScale : 1.0)
       .blur(
         radius: isAnyCardFocused && !isFocused
-          ? CardDesign.Effects.unfocusedBlur : CardDesign.Effects.focusedBlur
+          ? CardConstants.Effects.unfocusedBlur : CardConstants.Effects.focusedBlur
       )
       .brightness(
         isAnyCardFocused
           ? (isFocused
-            ? CardDesign.Effects.focusedBrightness : CardDesign.Effects.unfocusedBrightness) : 0
+            ? CardConstants.Effects.focusedBrightness : CardConstants.Effects.unfocusedBrightness) : 0
       )
       .offset(y: stackCollapseOffset)
       .onTapGesture {
@@ -133,13 +133,13 @@ public struct CardView: View {
   /// Creates a card face with the specified style
   /// Includes styling like background, shadow, and content based on design style
   private func cardFace(style: CardDesignStyle) -> some View {
-    RoundedRectangle(cornerRadius: CardDesign.Layout.cornerRadius)
+    RoundedRectangle(cornerRadius: CardConstants.Layout.cornerRadius)
       .fill(card.style.primaryColor)
       .shadow(
         radius: isFocused
-          ? CardDesign.Effects.focusedShadowRadius : CardDesign.Effects.unfocusedShadowRadius,
+          ? CardConstants.Effects.focusedShadowRadius : CardConstants.Effects.unfocusedShadowRadius,
         x: 0,
-        y: isFocused ? CardDesign.Effects.focusedShadowY : CardDesign.Effects.unfocusedShadowY
+        y: isFocused ? CardConstants.Effects.focusedShadowY : CardConstants.Effects.unfocusedShadowY
       )
       .overlay(
         cardContentForStyle(style)
@@ -148,9 +148,9 @@ public struct CardView: View {
         Rectangle()
           .fill(
             card.style.secondaryColor?.opacity(
-              isAnyCardFocused && !isFocused ? CardDesign.Effects.dimOpacity : 0)
-              ?? CardDesign.Colors.primary.opacity(
-                isAnyCardFocused && !isFocused ? CardDesign.Effects.dimOpacity : 0))
+              isAnyCardFocused && !isFocused ? CardConstants.Effects.dimOpacity : 0)
+              ?? CardConstants.Colors.primary.opacity(
+                isAnyCardFocused && !isFocused ? CardConstants.Effects.dimOpacity : 0))
       )
       .onAppear {
         print("Card: \(card.name)")

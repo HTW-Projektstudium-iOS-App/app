@@ -11,14 +11,14 @@ struct MinimalCardFront: View {
       Spacer()
 
       Text(card.name)
-        .font(CardDesign.Typography.titleFont)
+        .font(CardConstants.Typography.titleFont)
         .bold()
-        .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+        .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
 
       if let title = card.title {
         Text(title)
-          .font(CardDesign.Typography.subheadlineFont)
-          .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
+          .font(CardConstants.Typography.subheadlineFont)
+          .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.secondary)
       }
 
       Spacer()
@@ -27,13 +27,13 @@ struct MinimalCardFront: View {
         Spacer()
         Button(action: showInfoAction) {
           Image(systemName: "info.circle")
-            .font(CardDesign.Typography.titleFont)
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+            .font(CardConstants.Typography.titleFont)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
         }
         .buttonStyle(PlainButtonStyle())
       }
     }
-    .padding(CardDesign.Padding.standard)
+    .padding(CardConstants.Padding.standard)
   }
 }
 
@@ -47,15 +47,15 @@ struct MinimalCardBack: View {
 
       if let company = card.company {
         Text(company)
-          .font(CardDesign.Typography.headlineFont)
-          .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+          .font(CardConstants.Typography.headlineFont)
+          .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
       }
 
       if let email = card.contactInformation.email {
         Text(email)
-          .font(CardDesign.Typography.captionFont)
-          .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
-          .padding(.top, CardDesign.Padding.small)
+          .font(CardConstants.Typography.captionFont)
+          .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.secondary)
+          .padding(.top, CardConstants.Padding.small)
       }
 
       Spacer()
@@ -64,12 +64,12 @@ struct MinimalCardBack: View {
         Spacer()
         Button(action: showInfoAction) {
           Image(systemName: "info.circle")
-            .font(CardDesign.Typography.titleFont)
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+            .font(CardConstants.Typography.titleFont)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
         }
         .buttonStyle(PlainButtonStyle())
       }
     }
-    .padding(CardDesign.Padding.standard)
+    .padding(CardConstants.Padding.standard)
   }
 }

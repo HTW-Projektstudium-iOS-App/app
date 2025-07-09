@@ -8,25 +8,25 @@ struct ModernCardFront: View {
 
   var body: some View {
     VStack(alignment: .leading) {
-      Spacer().frame(height: CardDesign.Padding.large)
+      Spacer().frame(height: CardConstants.Padding.large)
 
-      VStack(alignment: .leading, spacing: CardDesign.Padding.small) {
+      VStack(alignment: .leading, spacing: CardConstants.Padding.small) {
         Text(card.name)
-          .font(CardDesign.Typography.titleFont)
+          .font(CardConstants.Typography.titleFont)
           .bold()
-          .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+          .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
 
         if let title = card.title {
           Text(title)
-            .font(CardDesign.Typography.headlineFont)
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
+            .font(CardConstants.Typography.headlineFont)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.secondary)
         }
 
         if let company = card.company {
           Text(company)
-            .font(CardDesign.Typography.subheadlineFont)
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
-            .padding(.top, CardDesign.Padding.small / 2)
+            .font(CardConstants.Typography.subheadlineFont)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
+            .padding(.top, CardConstants.Padding.small / 2)
         }
       }
 
@@ -36,13 +36,13 @@ struct ModernCardFront: View {
         Spacer()
         Button(action: showInfoAction) {
           Image(systemName: "info.circle")
-            .font(CardDesign.Typography.titleFont)
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+            .font(CardConstants.Typography.titleFont)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
         }
         .buttonStyle(PlainButtonStyle())
       }
     }
-    .padding(CardDesign.Padding.standard)
+    .padding(CardConstants.Padding.standard)
   }
 }
 
@@ -54,49 +54,49 @@ struct ModernCardBack: View {
 
   var body: some View {
     VStack(alignment: .leading) {
-      VStack(alignment: .leading, spacing: CardDesign.Padding.medium - 2) {
+      VStack(alignment: .leading, spacing: CardConstants.Padding.medium - 2) {
         if let company = card.company {
           Text(company)
-            .font(CardDesign.Typography.headlineFont)
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+            .font(CardConstants.Typography.headlineFont)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
         }
 
         if let role = card.role {
           Text(role)
-            .font(CardDesign.Typography.subheadlineFont)
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
+            .font(CardConstants.Typography.subheadlineFont)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.secondary)
         }
 
         if card.contactInformation.hasAnyInformation {
-          VStack(alignment: .leading, spacing: CardDesign.Padding.small) {
+          VStack(alignment: .leading, spacing: CardConstants.Padding.small) {
             if let email = card.contactInformation.email {
               Text(email)
-                .font(CardDesign.Typography.footnoteFont)
-                .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+                .font(CardConstants.Typography.footnoteFont)
+                .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
             }
 
             if let phone = card.contactInformation.phoneNumber {
               Text(phone)
-                .font(CardDesign.Typography.footnoteFont)
-                .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+                .font(CardConstants.Typography.footnoteFont)
+                .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
             }
           }
-          .padding(.top, CardDesign.Padding.small)
+          .padding(.top, CardConstants.Padding.small)
         }
 
         if let address = card.businessAddress?.formattedAddress {
           Text(address)
-            .font(CardDesign.Typography.footnoteFont)
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
-            .padding(.top, CardDesign.Padding.small / 2)
+            .font(CardConstants.Typography.footnoteFont)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
+            .padding(.top, CardConstants.Padding.small / 2)
         }
 
         if let slogan = card.slogan {
           Text("\"\(slogan)\"")
-            .font(CardDesign.Typography.captionFont)
+            .font(CardConstants.Typography.captionFont)
             .italic()
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.secondary)
-            .padding(.top, CardDesign.Padding.small)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.secondary)
+            .padding(.top, CardConstants.Padding.small)
         }
       }
 
@@ -106,12 +106,12 @@ struct ModernCardBack: View {
         Spacer()
         Button(action: showInfoAction) {
           Image(systemName: "info.circle")
-            .font(CardDesign.Typography.titleFont)
-            .foregroundColor(card.style.secondaryColor ?? CardDesign.Colors.primary)
+            .font(CardConstants.Typography.titleFont)
+            .foregroundColor(card.style.secondaryColor ?? CardConstants.Colors.primary)
         }
         .buttonStyle(PlainButtonStyle())
       }
     }
-    .padding(CardDesign.Padding.standard)
+    .padding(CardConstants.Padding.standard)
   }
 }

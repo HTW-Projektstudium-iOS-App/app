@@ -10,38 +10,38 @@ struct CardInfoSheet: View {
   @Binding var isPresented: Bool
 
   var body: some View {
-    VStack(alignment: .leading, spacing: CardDesign.Padding.large) {
+    VStack(alignment: .leading, spacing: CardConstants.Padding.large) {
       Text(card.name)
-        .font(CardDesign.Typography.headlineFont)
-        .foregroundColor(CardDesign.Colors.primary)
+        .font(CardConstants.Typography.headlineFont)
+        .foregroundColor(CardConstants.Colors.primary)
 
       if card.contactInformation.hasAnyInformation {
         Group {
           Text("Contact Information")
-            .font(CardDesign.Typography.subheadlineFont)
+            .font(CardConstants.Typography.subheadlineFont)
             .bold()
-            .foregroundColor(CardDesign.Colors.primary)
+            .foregroundColor(CardConstants.Colors.primary)
 
-          VStack(alignment: .leading, spacing: CardDesign.Padding.medium - 2) {
+          VStack(alignment: .leading, spacing: CardConstants.Padding.medium - 2) {
             if let email = card.contactInformation.email {
               Text("Email: \(email)")
-                .foregroundColor(CardDesign.Colors.primary)
+                .foregroundColor(CardConstants.Colors.primary)
             }
             if let phone = card.contactInformation.phoneNumber {
               Text("Phone: \(phone)")
-                .foregroundColor(CardDesign.Colors.primary)
+                .foregroundColor(CardConstants.Colors.primary)
             }
             if let fax = card.contactInformation.faxNumber {
               Text("Fax: \(fax)")
-                .foregroundColor(CardDesign.Colors.primary)
+                .foregroundColor(CardConstants.Colors.primary)
             }
             if let website = card.contactInformation.websiteURL {
               Text("Website: \(website.absoluteString)")
-                .foregroundColor(CardDesign.Colors.primary)
+                .foregroundColor(CardConstants.Colors.primary)
             }
             if let linkedin = card.contactInformation.linkedInURL {
               Text("LinkedIn: \(linkedin.absoluteString)")
-                .foregroundColor(CardDesign.Colors.primary)
+                .foregroundColor(CardConstants.Colors.primary)
             }
           }
           Divider()
@@ -51,12 +51,12 @@ struct CardInfoSheet: View {
       if let address = card.businessAddress, address.hasAnyInformation {
         Group {
           Text("Business Address")
-            .font(CardDesign.Typography.subheadlineFont)
+            .font(CardConstants.Typography.subheadlineFont)
             .bold()
-            .foregroundColor(CardDesign.Colors.primary)
+            .foregroundColor(CardConstants.Colors.primary)
 
           Text(address.formattedAddress ?? "")
-            .foregroundColor(CardDesign.Colors.primary)
+            .foregroundColor(CardConstants.Colors.primary)
 
           Divider()
         }
@@ -64,12 +64,12 @@ struct CardInfoSheet: View {
 
       Group {
         Text("Collection Data")
-          .font(CardDesign.Typography.subheadlineFont)
+          .font(CardConstants.Typography.subheadlineFont)
           .bold()
-          .foregroundColor(CardDesign.Colors.primary)
+          .foregroundColor(CardConstants.Colors.primary)
 
         Text("Date: \(card.collectionDate.formatted(date: .long, time: .shortened))")
-          .foregroundColor(CardDesign.Colors.primary)
+          .foregroundColor(CardConstants.Colors.primary)
 
         Text(
           """
@@ -78,7 +78,7 @@ struct CardInfoSheet: View {
           \(card.collectionLocation.longitude, specifier: "%.4f")
           """
         )
-        .foregroundColor(CardDesign.Colors.primary)
+        .foregroundColor(CardConstants.Colors.primary)
       }
 
       Spacer()
@@ -87,12 +87,12 @@ struct CardInfoSheet: View {
         isPresented = false
       }
       .frame(maxWidth: .infinity)
-      .padding(.vertical, CardDesign.Padding.medium)
-      .background(CardDesign.Colors.accent)
+      .padding(.vertical, CardConstants.Padding.medium)
+      .background(CardConstants.Colors.accent)
       .foregroundColor(.white)
       .cornerRadius(8)
     }
-    .padding(CardDesign.Padding.standard)
+    .padding(CardConstants.Padding.standard)
     .background(Color(.systemBackground))
   }
 }

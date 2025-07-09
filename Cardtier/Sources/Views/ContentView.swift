@@ -55,10 +55,10 @@ public struct ContentView: View {
                   showInfo: viewModel.bindingForCard(card, from: \.showInfo, defaultValue: false),
                   focusedCardID: $viewModel.focusedCardID
                 )
-                .frame(height: CardDesign.Layout.cardHeight)
-                .padding(.horizontal, CardDesign.Layout.horizontalPadding)
+                .frame(height: CardConstants.Layout.cardHeight)
+                .padding(.horizontal, CardConstants.Layout.horizontalPadding)
                 .zIndex(Double(index))
-                .offset(y: CGFloat(index) * CardDesign.Layout.cardStackOffset)
+                .offset(y: CGFloat(index) * CardConstants.Layout.cardStackOffset)
                 .transition(
                   .asymmetric(
                     insertion: .opacity.combined(with: .move(edge: .bottom)).animation(
@@ -70,7 +70,7 @@ public struct ContentView: View {
               }
             }
           }
-          .padding(.top, CardDesign.Layout.stackTopPadding)
+          .padding(.top, CardConstants.Layout.stackTopPadding)
           .animation(.cardStack, value: viewModel.focusedCardID)
         }
       }
@@ -78,7 +78,7 @@ public struct ContentView: View {
         scrollReader = proxy
       }
       .simultaneousGesture(
-        DragGesture(minimumDistance: CardDesign.Layout.dragMinDistance, coordinateSpace: .local)
+        DragGesture(minimumDistance: CardConstants.Layout.dragMinDistance, coordinateSpace: .local)
           .onChanged { _ in
             if !viewModel.isDragging && viewModel.focusedCardID != nil {
               viewModel.isDragging = true
@@ -103,10 +103,10 @@ public struct ContentView: View {
           showInfo: viewModel.bindingForCard(card, from: \.showInfo, defaultValue: false),
           focusedCardID: $viewModel.focusedCardID
         )
-        .frame(height: CardDesign.Layout.cardHeight)
-        .padding(.horizontal, CardDesign.Layout.horizontalPadding)
+        .frame(height: CardConstants.Layout.cardHeight)
+        .padding(.horizontal, CardConstants.Layout.horizontalPadding)
         .zIndex(1000)
-        .padding(.top, CardDesign.Layout.focusedCardTopPadding)
+        .padding(.top, CardConstants.Layout.focusedCardTopPadding)
         .transition(
           .asymmetric(
             insertion: AnyTransition.opacity

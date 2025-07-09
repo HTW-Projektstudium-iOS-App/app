@@ -1,7 +1,9 @@
 import SwiftUI
 
+// TODO: yeet this entire file
+
 /// Design constants used throughout the card stack implementation
-public enum CardDesign {
+public enum CardConstants {
   /// Dimensions and layout values for card stack
   public enum Layout {
     /// Height of each card in points
