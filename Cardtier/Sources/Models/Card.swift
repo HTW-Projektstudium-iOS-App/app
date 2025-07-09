@@ -2,50 +2,50 @@ import CoreLocation
 import Foundation
 
 /// Represents a business card with professional information and metadata
-public struct Card: Identifiable, Codable {
+struct Card: Identifiable, Codable {
   /// Unique identifier for the card
-  public let id: UUID
+  let id: UUID
 
   /// Full name of the person
-  public let name: String
+  let name: String
 
   /// Professional title (e.g., "CEO")
-  public let title: String?
+  let title: String?
 
   /// Role or position (e.g., "Executive Management")
-  public let role: String?
+  let role: String?
 
   /// Company or organization name
-  public let company: String?
+  let company: String?
 
   /// Contact information (email, phone, etc.)
-  public let contactInformation: ContactInformation
+  let contactInformation: ContactInformation
 
   /// Business/company address
-  public let businessAddress: Address?
+  let businessAddress: Address?
 
   /// Personal/private address
-  public let personalAddress: Address?
+  let personalAddress: Address?
 
   /// Company slogan or tagline
-  public let slogan: String?
+  let slogan: String?
 
   /// Visual styling for the card
-  public let style: CardStyle
+  let style: CardStyle
 
   /// Date when the card was collected
-  public let collectionDate: Date
+  let collectionDate: Date
 
   private let collectionLatitude: Double
   private let collectionLongitude: Double
 
   /// Geographic location where the card was collected
-  public var collectionLocation: CLLocationCoordinate2D {
+  var collectionLocation: CLLocationCoordinate2D {
     CLLocationCoordinate2D(latitude: collectionLatitude, longitude: collectionLongitude)
   }
 
   /// Creates a new business card with full details
-  public init(
+  init(
     id: UUID = UUID(),
     name: String,
     title: String? = nil,

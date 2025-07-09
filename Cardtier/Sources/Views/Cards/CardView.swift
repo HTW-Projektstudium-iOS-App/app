@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum CardDesignStyle {
+enum CardDesignStyle {
   case modernFront
   case modernBack
   case minimalFront
@@ -9,7 +9,7 @@ public enum CardDesignStyle {
 
 /// Displays a single business card that can be flipped and shows metadata
 /// This view handles the main card presentation, animations, and interactions
-public struct CardView: View {
+struct CardView: View {
   /// The card data model containing all business card information
   let card: Card
 
@@ -48,7 +48,7 @@ public struct CardView: View {
   ///   - isFlipped: Binding to track if card is showing back side
   ///   - showInfo: Binding to track if metadata sheet is visible
   ///   - focusedCardID: Binding to the currently focused card ID
-  public init(
+  init(
     card: Card,
     isFlipped: Binding<Bool>,
     showInfo: Binding<Bool>,
@@ -72,7 +72,7 @@ public struct CardView: View {
     }
   }
 
-  public var body: some View {
+  var body: some View {
     GeometryReader { geometry in
       let cardWidth = min(
         geometry.size.width * CardConstants.Layout.cardWidthMultiplier, CardConstants.Layout.maxCardWidth)

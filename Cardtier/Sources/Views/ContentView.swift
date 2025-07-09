@@ -1,14 +1,14 @@
 import SwiftUI
 
-public struct ContentView: View {
+struct ContentView: View {
   @StateObject private var viewModel = CardStackViewModel(withSampleData: true)
 
   @State private var scrollPosition: CGPoint = .zero
   @State private var scrollReader: ScrollViewProxy?
 
-  public init() {}
+  init() {}
 
-  public var body: some View {
+  var body: some View {
     ZStack(alignment: .top) {
       cardStackView
 
