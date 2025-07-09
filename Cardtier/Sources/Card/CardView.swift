@@ -14,6 +14,9 @@ struct CardView: View {
   private var isFocused: Bool { focusedCardID == card.id }
   private var isAnyCardFocused: Bool { focusedCardID != nil }
 
+  let isScrolling: Bool
+  let scrollVelocity: CGFloat
+
   /// Additional vertical offset for non-focused cards when a card is selected
   /// Creates a "stack collapse" effect where unfocused cards move down
   private var stackCollapseOffset: CGFloat {
@@ -36,8 +39,24 @@ struct CardView: View {
             .scaleEffect(x: -1, y: 1, anchor: .center)
         case .minimal:
           MinimalCard(card: card, side: .front, showInfoAction: { isShowingInfo = true })
+        case .traditional where isFlipped:
+          TraditionalCard(card: card, side: .back, showInfoAction: { isShowingInfo = true })
+            .scaleEffect(x: -1, y: 1, anchor: .center)
+        case .traditional:
+          TraditionalCard(card: card, side: .front, showInfoAction: { isShowingInfo = true })
         }
       }
+      .overlay(
+        Rectangle()
+          .stroke(Color.black.opacity(0.15), lineWidth: 0.7)
+      )
+      .offset(y: (isAnyCardFocused && !isFocused) ? 30 : 0)
+      .modifier(ScrollingAnimation(
+        isScrolling: isScrolling,
+        scrollVelocity: scrollVelocity,
+        isFocused: isFocused
+      ))
+      .modifier(BreathingAnimation(isFocused: isFocused, isScrolling: isScrolling))
       .rotation3DEffect(
         .degrees(isFlipped ? 180 : 0),
         axis: (x: 0, y: 1, z: 0),

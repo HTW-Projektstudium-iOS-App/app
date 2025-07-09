@@ -27,7 +27,7 @@ struct FocusedCardModifier: ViewModifier {
     content
       .baseCard(removalEdge: .bottom)
       .zIndex(1000)
-      .padding(.top, 20)
+      .padding(.top, 40)
       .shadow(radius: 10, x: 0, y: 3)
       .rotation3DEffect(
         .degrees(1),
@@ -40,12 +40,13 @@ struct FocusedCardModifier: ViewModifier {
 
 struct CardModifier: ViewModifier {
   let index: Int
+  let zIndex: Int
 
   func body(content: Content) -> some View {
     content
       .baseCard(removalEdge: .top)
-      .zIndex(Double(index))
-      .offset(y: CGFloat(-120 * index))
+      .zIndex(Double(zIndex))
+      .offset(y: CGFloat(index) * -25)
   }
 }
 
@@ -58,7 +59,7 @@ extension View {
     modifier(FocusedCardModifier())
   }
 
-  func card(index: Int) -> some View {
-    modifier(CardModifier(index: index))
+  func card(index: Int, zIndex: Int) -> some View {
+    modifier(CardModifier(index: index, zIndex: zIndex))
   }
 }

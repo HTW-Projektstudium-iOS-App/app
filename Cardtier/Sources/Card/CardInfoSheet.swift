@@ -1,98 +1,195 @@
 import SwiftUI
 
-/// Sheet displaying detailed metadata about a business card
-/// Appears when user taps info button
+/// A sheet view displaying detailed information about a card.
+/// Shows card header, contact info, address, and collection data.
 struct CardInfoSheet: View {
-  /// The card to display information for
   let card: Card
-
-  /// Binding to control sheet presentation
   @Binding var isPresented: Bool
 
   var body: some View {
-    VStack(alignment: .leading, spacing: CardConstants.Padding.large) {
+    ScrollView {
+      VStack(alignment: .leading, spacing: 20) {
+        cardHeader
+
+        // Show contact section if any contact info exists
+        if card.contactInformation.hasAnyInformation {
+          contactSection
+        }
+
+        // Show address section if address info exists
+        if let address = card.businessAddress,
+          address.hasAnyInformation
+        {
+          addressSection(address)
+        }
+
+        collectionDataSection
+
+        Spacer(minLength: 20)
+      }
+      .padding(16)
+    }
+    // Add close button at the bottom, respecting safe area
+    .safeAreaInset(edge: .bottom) {
+      closeButton
+    }
+    .background(Color(.systemBackground))
+  }
+
+  /// Card header with name, title, and company
+  private var cardHeader: some View {
+    VStack(alignment: .leading, spacing: 4) {
       Text(card.name)
-        .font(CardConstants.Typography.headlineFont)
-        .foregroundColor(CardConstants.Colors.primary)
+        .font(CardElements.customFont(name: card.style.fontName, size: 20, weight: .bold))
+        .foregroundColor(card.style.secondaryColor ?? .black)
 
-      if card.contactInformation.hasAnyInformation {
-        Group {
-          Text("Contact Information")
-            .font(CardConstants.Typography.subheadlineFont)
-            .bold()
-            .foregroundColor(CardConstants.Colors.primary)
+      // Optional title
+      if let title = card.title {
+        Text(title)
+          .font(CardElements.customFont(name: card.style.fontName, size: 16, weight: .medium))
+          .foregroundColor(card.style.secondaryColor ?? .gray)
+      }
 
-          VStack(alignment: .leading, spacing: CardConstants.Padding.medium - 2) {
-            if let email = card.contactInformation.email {
-              Text("Email: \(email)")
-                .foregroundColor(CardConstants.Colors.primary)
-            }
-            if let phone = card.contactInformation.phoneNumber {
-              Text("Phone: \(phone)")
-                .foregroundColor(CardConstants.Colors.primary)
-            }
-            if let fax = card.contactInformation.faxNumber {
-              Text("Fax: \(fax)")
-                .foregroundColor(CardConstants.Colors.primary)
-            }
-            if let website = card.contactInformation.websiteURL {
-              Text("Website: \(website.absoluteString)")
-                .foregroundColor(CardConstants.Colors.primary)
-            }
-            if let linkedin = card.contactInformation.linkedInURL {
-              Text("LinkedIn: \(linkedin.absoluteString)")
-                .foregroundColor(CardConstants.Colors.primary)
-            }
-          }
-          Divider()
+      // Optional company
+      if let company = card.company {
+        Text(company)
+          .font(CardElements.customFont(name: card.style.fontName, size: 14))
+          .foregroundColor(card.style.secondaryColor ?? .black)
+      }
+    }
+    .padding(.bottom, 4)
+  }
+
+  /// Section for contact information (email, phone, fax, website, LinkedIn)
+  private var contactSection: some View {
+    Group {
+      Text("Contact Information")
+        .font(CardElements.customFont(name: card.style.fontName, size: 16, weight: .semibold))
+        .foregroundColor(card.style.secondaryColor ?? .black)
+
+      VStack(alignment: .leading, spacing: 6) {
+        contactItem(
+          icon: "envelope",
+          text: card.contactInformation.email
+        )
+        contactItem(
+          icon: "phone",
+          text: card.contactInformation.phoneNumber
+        )
+        contactItem(
+          icon: "printer",
+          text: card.contactInformation.faxNumber
+        )
+
+        if let website = card.contactInformation.websiteURL {
+          contactItem(icon: "globe", text: website.absoluteString)
+        }
+
+        if let linkedin = card.contactInformation.linkedInURL {
+          contactItem(icon: "link", text: linkedin.absoluteString)
         }
       }
 
-      if let address = card.businessAddress, address.hasAnyInformation {
-        Group {
-          Text("Business Address")
-            .font(CardConstants.Typography.subheadlineFont)
-            .bold()
-            .foregroundColor(CardConstants.Colors.primary)
+      divider
+    }
+  }
 
-          Text(address.formattedAddress ?? "")
-            .foregroundColor(CardConstants.Colors.primary)
-
-          Divider()
+  /// Helper for displaying a contact item with icon and text
+  private func contactItem(icon: String, text: String?) -> some View {
+    Group {
+      if let text = text {
+        HStack(alignment: .top) {
+          Image(systemName: icon)
+            .frame(width: 20)
+          Text(text)
+            .font(CardElements.customFont(name: card.style.fontName, size: 14))
         }
+        .foregroundColor(card.style.secondaryColor ?? .black)
       }
+    }
+  }
 
-      Group {
-        Text("Collection Data")
-          .font(CardConstants.Typography.subheadlineFont)
-          .bold()
-          .foregroundColor(CardConstants.Colors.primary)
+  /// Section for business address, if available
+  private func addressSection(_ address: Card.Address) -> some View {
+    Group {
+      Text("Business Address")
+        .font(CardElements.customFont(name: card.style.fontName, size: 16, weight: .semibold))
+        .foregroundColor(card.style.secondaryColor ?? .black)
 
-        Text("Date: \(card.collectionDate.formatted(date: .long, time: .shortened))")
-          .foregroundColor(CardConstants.Colors.primary)
+      HStack(alignment: .top) {
+        Image(systemName: "building")
+          .frame(width: 20)
+        Text(address.formattedAddress ?? "")
+          .font(CardElements.customFont(name: card.style.fontName, size: 14))
+          .multilineTextAlignment(.leading)
+      }
+      .foregroundColor(card.style.secondaryColor ?? .black)
 
+      divider
+    }
+  }
+
+  /// Section for collection date and location
+  private var collectionDataSection: some View {
+    Group {
+      Text("Collection Data")
+        .font(CardElements.customFont(name: card.style.fontName, size: 16, weight: .semibold))
+        .foregroundColor(
+          card.style.secondaryColor ?? .black
+        )
+
+      HStack(alignment: .top) {
+        Image(systemName: "calendar")
+          .frame(width: 20)
+        Text(
+          card.collectionDate.formatted(date: .long, time: .shortened)
+        )
+        .font(CardElements.customFont(name: card.style.fontName, size: 14))
+      }
+      .foregroundColor(
+        card.style.secondaryColor ?? .black
+      )
+
+      HStack(alignment: .top) {
+        Image(systemName: "mappin.and.ellipse")
+          .frame(width: 20)
         Text(
           """
-          Location: \
           \(card.collectionLocation.latitude, specifier: "%.4f"), \
           \(card.collectionLocation.longitude, specifier: "%.4f")
           """
         )
-        .foregroundColor(CardConstants.Colors.primary)
+        .font(CardElements.customFont(name: card.style.fontName, size: 14))
       }
-
-      Spacer()
-
-      Button("Close") {
-        isPresented = false
-      }
-      .frame(maxWidth: .infinity)
-      .padding(.vertical, CardConstants.Padding.medium)
-      .background(CardConstants.Colors.accent)
-      .foregroundColor(.white)
-      .cornerRadius(8)
+      .foregroundColor(
+        card.style.secondaryColor ?? .black
+      )
     }
-    .padding(CardConstants.Padding.standard)
-    .background(Color(.systemBackground))
+  }
+
+  /// Divider with card-specific color
+  private var divider: some View {
+    Divider()
+      .background(card.style.secondaryColor?.opacity(0.5) ?? Color.gray.opacity(0.5))
+      .padding(.vertical, 4)
+  }
+
+  /// Close button at the bottom of the sheet
+  private var closeButton: some View {
+    Button(action: { isPresented = false }) {
+      Text("Close")
+        .font(CardElements.customFont(name: card.style.fontName, size: 16, weight: .medium))
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+    }
+    .buttonStyle(.borderedProminent)
+    .tint(card.style.secondaryColor ?? .blue)
+    .padding(.horizontal, 16)
+    .padding(.bottom, 4)
+    .background(
+      Rectangle()
+        .fill(.ultraThinMaterial)
+        .ignoresSafeArea()
+    )
   }
 }

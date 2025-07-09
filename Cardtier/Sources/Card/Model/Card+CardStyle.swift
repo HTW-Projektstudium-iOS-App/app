@@ -5,6 +5,7 @@ extension Card {
   enum DesignType: String, Codable {
     case modern
     case minimal
+    case traditional
   }
 
   /// Visual style for a business card
