@@ -7,17 +7,13 @@ class CardStackViewModel: ObservableObject {
   /// Currently loaded cards
   @Published var cards: [Card] = []
 
-  /// Dictionary tracking which cards are flipped
-  @Published var flipped: [UUID: Bool] = [:]
-
-  /// Dictionary tracking which cards show info
-  @Published var showInfo: [UUID: Bool] = [:]
-
   /// Currently focused card ID (if any)
   @Published var focusedCardID: UUID?
 
-  /// Whether a drag operation is in progress
-  @Published var isDragging = false
+  /// Currently focused card, if any
+  var focusedCard: Card? {
+    focusedCardID.flatMap { id in cards.first(where: { $0.id == id }) }
+  }
 
   /// Initializes with sample cards for preview/testing
   /// - Parameter withSampleData: Whether to load sample data
@@ -31,8 +27,6 @@ class CardStackViewModel: ObservableObject {
   func resetFocusedCard() {
     withAnimation(.cardFocus) {
       focusedCardID = nil
-      flipped = [:]
-      showInfo = [:]
     }
   }
 
@@ -50,10 +44,5 @@ class CardStackViewModel: ObservableObject {
       get: { self[keyPath: keyPath][card.id] ?? defaultValue },
       set: { self[keyPath: keyPath][card.id] = $0 }
     )
-  }
-
-  /// Returns the currently focused card, if any
-  var focusedCard: Card? {
-    focusedCardID.flatMap { id in cards.first(where: { $0.id == id }) }
   }
 }

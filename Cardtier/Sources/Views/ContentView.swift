@@ -6,6 +6,8 @@ struct ContentView: View {
   @State private var scrollPosition: CGPoint = .zero
   @State private var scrollReader: ScrollViewProxy?
 
+  @State private var isDragging: Bool = false
+
   init() {}
 
   var body: some View {
@@ -51,8 +53,6 @@ struct ContentView: View {
               if card.id != viewModel.focusedCardID {
                 CardView(
                   card: card,
-                  isFlipped: viewModel.bindingForCard(card, from: \.flipped, defaultValue: false),
-                  showInfo: viewModel.bindingForCard(card, from: \.showInfo, defaultValue: false),
                   focusedCardID: $viewModel.focusedCardID
                 )
                 .frame(height: CardConstants.Layout.cardHeight)
@@ -80,15 +80,15 @@ struct ContentView: View {
       .simultaneousGesture(
         DragGesture(minimumDistance: CardConstants.Layout.dragMinDistance, coordinateSpace: .local)
           .onChanged { _ in
-            if !viewModel.isDragging && viewModel.focusedCardID != nil {
-              viewModel.isDragging = true
+            if !isDragging && viewModel.focusedCardID != nil {
+              isDragging = true
               withAnimation(.cardStack) {
                 viewModel.resetFocusedCard()
               }
             }
           }
           .onEnded { _ in
-            viewModel.isDragging = false
+            isDragging = false
           }
       )
     }
@@ -99,8 +99,6 @@ struct ContentView: View {
       if let card = viewModel.focusedCard {
         CardView(
           card: card,
-          isFlipped: viewModel.bindingForCard(card, from: \.flipped, defaultValue: false),
-          showInfo: viewModel.bindingForCard(card, from: \.showInfo, defaultValue: false),
           focusedCardID: $viewModel.focusedCardID
         )
         .frame(height: CardConstants.Layout.cardHeight)

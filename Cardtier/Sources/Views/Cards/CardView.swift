@@ -15,10 +15,10 @@ struct CardView: View {
 
   /// Whether the card is currently flipped to show back side
   /// True = showing back side, False = showing front side
-  @Binding var isFlipped: Bool
+  @State var isFlipped: Bool = false
 
   /// Whether the detailed metadata sheet is currently displayed
-  @Binding var showInfo: Bool
+  @State var isShowingInfo: Bool = false
 
   /// ID of the currently focused/selected card (if any)
   /// When a card is focused, it receives visual emphasis and interaction focus
@@ -45,18 +45,12 @@ struct CardView: View {
   /// Creates a new card view
   /// - Parameters:
   ///   - card: The card data to display
-  ///   - isFlipped: Binding to track if card is showing back side
-  ///   - showInfo: Binding to track if metadata sheet is visible
   ///   - focusedCardID: Binding to the currently focused card ID
   init(
     card: Card,
-    isFlipped: Binding<Bool>,
-    showInfo: Binding<Bool>,
     focusedCardID: Binding<UUID?>
   ) {
     self.card = card
-    self._isFlipped = isFlipped
-    self._showInfo = showInfo
     self._focusedCardID = focusedCardID
   }
 
@@ -75,7 +69,8 @@ struct CardView: View {
   var body: some View {
     GeometryReader { geometry in
       let cardWidth = min(
-        geometry.size.width * CardConstants.Layout.cardWidthMultiplier, CardConstants.Layout.maxCardWidth)
+        geometry.size.width * CardConstants.Layout.cardWidthMultiplier,
+        CardConstants.Layout.maxCardWidth)
       let cardHeight = cardWidth / CardConstants.Layout.cardAspectRatio
 
       ZStack {
@@ -105,7 +100,8 @@ struct CardView: View {
       .brightness(
         isAnyCardFocused
           ? (isFocused
-            ? CardConstants.Effects.focusedBrightness : CardConstants.Effects.unfocusedBrightness) : 0
+            ? CardConstants.Effects.focusedBrightness : CardConstants.Effects.unfocusedBrightness)
+          : 0
       )
       .offset(y: stackCollapseOffset)
       .onTapGesture {
@@ -124,8 +120,8 @@ struct CardView: View {
           isFlipped = false
         }
       }
-      .sheet(isPresented: $showInfo) {
-        CardInfoSheet(card: card, isPresented: $showInfo)
+      .sheet(isPresented: $isShowingInfo) {
+        CardInfoSheet(card: card, isPresented: $isShowingInfo)
       }
     }
   }
@@ -166,13 +162,13 @@ struct CardView: View {
   private func cardContentForStyle(_ style: CardDesignStyle) -> some View {
     switch style {
     case .modernFront:
-      ModernCardFront(card: card, showInfoAction: { showInfo = true })
+      ModernCardFront(card: card, showInfoAction: { isShowingInfo = true })
     case .modernBack:
-      ModernCardBack(card: card, showInfoAction: { showInfo = true })
+      ModernCardBack(card: card, showInfoAction: { isShowingInfo = true })
     case .minimalFront:
-      MinimalCardFront(card: card, showInfoAction: { showInfo = true })
+      MinimalCardFront(card: card, showInfoAction: { isShowingInfo = true })
     case .minimalBack:
-      MinimalCardBack(card: card, showInfoAction: { showInfo = true })
+      MinimalCardBack(card: card, showInfoAction: { isShowingInfo = true })
     }
   }
 }
