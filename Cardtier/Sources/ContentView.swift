@@ -7,7 +7,7 @@ struct ContentView: View {
         .resizable()
         .ignoresSafeArea()
 
-      CardStack()
+      HomeView()
     }
   }
 }
