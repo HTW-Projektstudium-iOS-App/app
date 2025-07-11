@@ -7,13 +7,13 @@ enum CardSide { case front, back }
 struct CardView: View {
   let card: Card
 
-  @State private var isFlipped: Bool = false
   @State private var isShowingInfo: Bool = false
 
   @Binding var focusedCardID: UUID?
   private var isFocused: Bool { focusedCardID == card.id }
   private var isAnyCardFocused: Bool { focusedCardID != nil }
 
+  let isFlipped: Bool
   let isScrolling: Bool
   let scrollVelocity: CGFloat
 
@@ -66,22 +66,6 @@ struct CardView: View {
       .blur(radius: isAnyCardFocused && !isFocused ? 1.5 : 0)
       .brightness(isAnyCardFocused ? (isFocused ? 0.03 : -0.05) : 0)
       .offset(y: stackCollapseOffset)
-      .onTapGesture {
-        if isFocused {
-          withAnimation(.cardFlip) {
-            isFlipped.toggle()
-          }
-        } else {
-          withAnimation(.cardSelection) {
-            focusedCardID = card.id
-          }
-        }
-      }
-      .onChange(of: focusedCardID) { _, newID in
-        if newID != card.id {
-          isFlipped = false
-        }
-      }
       .sheet(isPresented: $isShowingInfo) {
         CardInfoSheet(card: card, isPresented: $isShowingInfo)
       }

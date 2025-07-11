@@ -6,18 +6,17 @@ private struct BaseCardModifier: ViewModifier {
   func body(content: Content) -> some View {
     content
       .aspectRatio(1.6, contentMode: .fit)
-      .padding(.horizontal, 20)
-      .transition(
-        .asymmetric(
-          insertion: .opacity
-            .combined(with: .move(edge: .bottom))
-            .animation(.easeOut(duration: 0.4)),
-          removal: .opacity
-            .combined(with: .move(edge: removalEdge))
-            .animation(.easeIn(duration: 0.35))
-        )
-      )
-
+    // TODO: integrate this back in
+    // .transition(
+    //   .asymmetric(
+    //     insertion: .opacity
+    //       .combined(with: .move(edge: .bottom))
+    //       .animation(.easeOut(duration: 0.4)),
+    //     removal: .opacity
+    //       .combined(with: .move(edge: removalEdge))
+    //       .animation(.easeIn(duration: 0.35))
+    //   )
+    // )
   }
 }
 
