@@ -36,7 +36,7 @@ import SwiftUI
   var slogan: String?
 
   /// Array of logos or images to display
-  var logos: [Data]?
+  var logos: [Data]
 
   /// Visual styling for the card
   var style: CardStyle
@@ -64,7 +64,7 @@ import SwiftUI
     businessAddress: Address? = nil,
     personalAddress: Address? = nil,
     slogan: String? = nil,
-    logos: [Data]? = nil,
+    logos: [Data] = [],
     style: CardStyle = CardStyle(),
     collectionDate: Date = Date(),
     collectionLocation: CLLocationCoordinate2D = CLLocationCoordinate2D()

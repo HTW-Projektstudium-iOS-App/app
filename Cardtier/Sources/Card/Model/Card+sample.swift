@@ -12,7 +12,7 @@ extension Card {
       contactInformation: ContactInformation(
         email: "john@acme.com",
         phoneNumber: "+49 123 456789",
-        linkedInURL: URL(string: "https://linkedin.com/in/johndoe")
+        linkedInURL: "https://linkedin.com/in/johndoe"
       ),
       businessAddress: Address(
         street: "Alexanderplatz 1",
@@ -36,7 +36,7 @@ extension Card {
       contactInformation: ContactInformation(
         email: "jane@techsolutions.com",
         phoneNumber: "+33 1 23 45 67 89",
-        websiteURL: URL(string: "https://techsolutions.com")
+        websiteURL: "https://techsolutions.com"
       ),
       businessAddress: Address(
         street: "15 Rue de Rivoli",
@@ -60,8 +60,8 @@ extension Card {
       contactInformation: ContactInformation(
         email: "alice@globalindustries.co.uk",
         phoneNumber: "+44 20 1234 5678",
-        websiteURL: URL(string: "https://globalindustries.co.uk"),
-        linkedInURL: URL(string: "https://linkedin.com/in/alicejohnson")
+        websiteURL: "https://globalindustries.co.uk",
+        linkedInURL: "https://linkedin.com/in/alicejohnson"
       ),
       slogan: "F*ck bitches, get data",
       style: CardStyle(
@@ -80,7 +80,7 @@ extension Card {
       contactInformation: ContactInformation(
         email: "bob@innovatech.com",
         phoneNumber: "+1 212 555 1234",
-        websiteURL: URL(string: "https://bobbrowndesign.com")
+        websiteURL: "https://bobbrowndesign.com"
       ),
       slogan: "Design with purpose",
       style: CardStyle(
@@ -161,7 +161,7 @@ extension Card {
       contactInformation: ContactInformation(
         email: "fiona@creativeagency.co",
         phoneNumber: "+1 303 555 7890",
-        websiteURL: URL(string: "https://creativeagency.co")
+        websiteURL: "https://creativeagency.co"
       ),
       slogan: "Creating memorable brands",
       style: CardStyle(
@@ -233,7 +233,7 @@ extension Card {
       contactInformation: ContactInformation(
         email: "julia@entertainment.com",
         phoneNumber: "+1 305 555 4567",
-        websiteURL: URL(string: "https://entertainment.com/events")
+        websiteURL: "https://entertainment.com/events"
       ),
       businessAddress: Address(
         city: "Miami",
@@ -272,7 +272,7 @@ extension Card {
       contactInformation: ContactInformation(
         email: "laura@consultingfirm.com",
         phoneNumber: "+1 202 555 7654",
-        linkedInURL: URL(string: "https://linkedin.com/in/laurasilver")
+        linkedInURL: "https://linkedin.com/in/laurasilver"
       ),
       style: CardStyle(
         primaryColor: .white,
@@ -310,7 +310,7 @@ extension Card {
       contactInformation: ContactInformation(
         email: "nina@travelagency.com",
         phoneNumber: "+1 503 555 8765",
-        websiteURL: URL(string: "https://travelagency.com")
+        websiteURL: "https://travelagency.com"
       ),
       slogan: "Explore the world with us",
       style: CardStyle(
@@ -387,7 +387,7 @@ extension Card {
       contactInformation: ContactInformation(
         email: "rachel@techstartup.io",
         phoneNumber: "+1 415 555 2468",
-        linkedInURL: URL(string: "https://linkedin.com/in/rachelsilver")
+        linkedInURL: "https://linkedin.com/in/rachelsilver"
       ),
       style: CardStyle(
         primaryColor: .white,

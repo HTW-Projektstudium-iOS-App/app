@@ -120,7 +120,7 @@ struct MinimalCardBack: View {
 
             VStack(alignment: .leading, spacing: 5) {
               contactItem(
-                text: card.contactInformation.websiteURL?.absoluteString ?? "www.website.com")
+                text: card.contactInformation.websiteURL ?? "www.website.com")
               contactItem(text: card.contactInformation.email ?? "company@email.com")
               contactItem(text: card.contactInformation.phoneNumber ?? "1076-14734920")
             }

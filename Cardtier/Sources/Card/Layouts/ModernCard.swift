@@ -93,8 +93,8 @@ private struct ModernCardFront: View {
 
           VStack(alignment: .leading, spacing: 4) {
             contactItem(
-              label: "Website:", value: card.contactInformation.websiteURL?.absoluteString)
-            contactItem(label: "LinkedIN:", value: card.contactInformation.linkedInURL?.host)
+              label: "Website:", value: card.contactInformation.websiteURL)
+            contactItem(label: "LinkedIN:", value: card.contactInformation.linkedInURL)
           }
         }
 
