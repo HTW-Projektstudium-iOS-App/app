@@ -19,7 +19,6 @@ extension Card {
         city: "Berlin",
         country: "Germany"
       ),
-      logos: [UIImage(named: "acme_logo")].compactMap { $0 },
       style: CardStyle(
         primaryColor: Color(red: 0.9, green: 0.9, blue: 0.9, opacity: 1.0),
         secondaryColor: .black,

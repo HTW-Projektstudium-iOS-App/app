@@ -11,10 +11,21 @@ extension Card {
   /// Visual style for a business card
   struct CardStyle: Codable {
     /// Primary color for the card
-    let primaryColor: Color
+    private let primaryColorHex: String
 
     /// Secondary color for the card
-    let secondaryColor: Color?
+    private let secondaryColorHex: String?
+
+    /// Primary color for the card
+    var primaryColor: Color {
+      Color(hexString: primaryColorHex) ?? .white
+    }
+
+    /// Secondary color for the card
+    var secondaryColor: Color? {
+      guard let hex = secondaryColorHex else { return nil }
+      return Color(hexString: hex)
+    }
 
     /// Font name for the card text
     let fontName: String?
@@ -29,37 +40,10 @@ extension Card {
       fontName: String? = nil,
       designStyle: DesignType = .modern
     ) {
-      self.primaryColor = primaryColor
-      self.secondaryColor = secondaryColor
+      self.primaryColorHex = primaryColor.hexString
+      self.secondaryColorHex = secondaryColor?.hexString
       self.fontName = fontName
       self.designStyle = designStyle
-    }
-
-    private enum CodingKeys: String, CodingKey {
-      case primaryColorHex, secondaryColorHex, fontName, designStyle
-    }
-
-    func encode(to encoder: Encoder) throws {
-      var container = encoder.container(keyedBy: CodingKeys.self)
-
-      try container.encode(primaryColor.hexString, forKey: .primaryColorHex)
-      try container.encodeIfPresent(secondaryColor?.hexString, forKey: .secondaryColorHex)
-
-      try container.encode(fontName, forKey: .fontName)
-      try container.encode(designStyle, forKey: .designStyle)
-    }
-
-    init(from decoder: Decoder) throws {
-      let container = try decoder.container(keyedBy: CodingKeys.self)
-
-      let primaryHex = try container.decode(String.self, forKey: .primaryColorHex)
-      self.primaryColor = Color(hexString: primaryHex) ?? .white
-
-      let secondaryHex = try container.decodeIfPresent(String.self, forKey: .secondaryColorHex)
-      self.secondaryColor = Color(hexString: secondaryHex ?? "")
-
-      self.fontName = try container.decodeIfPresent(String.self, forKey: .fontName)
-      self.designStyle = try container.decode(DesignType.self, forKey: .designStyle)
     }
   }
 }

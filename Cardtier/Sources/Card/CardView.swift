@@ -51,11 +51,13 @@ struct CardView: View {
           .stroke(Color.black.opacity(0.15), lineWidth: 0.7)
       )
       .offset(y: (isAnyCardFocused && !isFocused) ? 30 : 0)
-      .modifier(ScrollingAnimation(
-        isScrolling: isScrolling,
-        scrollVelocity: scrollVelocity,
-        isFocused: isFocused
-      ))
+      .modifier(
+        ScrollingAnimation(
+          isScrolling: isScrolling,
+          scrollVelocity: scrollVelocity,
+          isFocused: isFocused
+        )
+      )
       .modifier(BreathingAnimation(isFocused: isFocused, isScrolling: isScrolling))
       .rotation3DEffect(
         .degrees(isFlipped ? 180 : 0),

@@ -33,7 +33,7 @@ struct CardElements {
   /// Includes fallback system: custom logo → placeholder → system icon
   static func logo(
     index: Int = 0,
-    logos: [UIImage]? = nil,
+    logos: [Data]? = nil,
     color: Color?,
     shape: LogoShape = .oval,
     width: CGFloat = 95,
@@ -80,7 +80,7 @@ struct CardElements {
       .blur(radius: 2)
 
       if let logoArray = logos, index < logoArray.count {
-        Image(uiImage: logoArray[index])
+        Image(uiImage: UIImage(data: logoArray[index])!)
           .resizable()
           .scaledToFit()
           .frame(width: contentWidth, height: contentHeight)

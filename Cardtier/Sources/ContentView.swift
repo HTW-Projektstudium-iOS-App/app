@@ -1,27 +1,35 @@
+import SwiftData
 import SwiftUI
 
 struct ContentView: View {
   @Namespace private var namespace
 
-  @State private var card = Card.sampleCards[0]
-  @State private var editingCard = false
+  @Query(filter: #Predicate<Card> { $0.isUserCard == true })
+  private var _userCard: [Card]
+  private var userCard: Card? {
+    _userCard.first
+  }
 
-  @State private var scrollOffset: CGFloat = 0
+  @Query(filter: #Predicate<Card> { $0.isUserCard == false })
+  private var collectedCards: [Card]
+
+  @State private var editingCard = false
 
   var body: some View {
     VStack {
-      if editingCard {
-        EditView(card: card, cardNamespace: namespace) {
+      // TODO: add proper onboarding screen
+      if editingCard || userCard == nil {
+        EditView(card: userCard, cardNamespace: namespace) {
           withAnimation {
             editingCard = false
           }
         }
       } else {
         CardView(
-          card: card, focusedCardID: .constant(nil), isFlipped: false, isScrolling: false,
+          card: userCard!, focusedCardID: .constant(nil), isFlipped: false, isScrolling: false,
           scrollVelocity: 0
         )
-        .matchedGeometryEffect(id: card.id, in: namespace, isSource: true)
+        .matchedGeometryEffect(id: userCard!.id, in: namespace, isSource: true)
         .card(index: 0, zIndex: 0)
         .onTapGesture {
           withAnimation {
@@ -58,7 +66,6 @@ struct ContentView: View {
         }
         .transition(.move(edge: .bottom).animation(.easeInOut(duration: 5.25)))
         .padding(.horizontal)
-        //        .offset(y: 200)
       }
     }
   }

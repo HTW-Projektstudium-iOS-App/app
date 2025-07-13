@@ -11,6 +11,8 @@ struct CardFrameKey: PreferenceKey {
 }
 
 public struct EditView: View {
+  @Environment(\.modelContext) private var modelContext
+
   var scrollDrag: some Gesture {
     DragGesture(minimumDistance: 0, coordinateSpace: .named("scroll"))
       .onChanged { value in
@@ -28,6 +30,10 @@ public struct EditView: View {
           isDismissed = true
           lastDistance = formOffset ?? 0.0 - (dragStartFormOffset ?? 0.0)
           onDismiss()
+
+          if isNew {
+            modelContext.insert(card)
+          }
         }
 
         isDragging = false
@@ -57,9 +63,18 @@ public struct EditView: View {
     Double(cardFrame?.minY ?? 0.0) - Double(dragStartCardFrame?.minY ?? 0.0)
   }
 
-  let card: Card
+  @State private var card: Card
+  private let isNew: Bool
   let cardNamespace: Namespace.ID
   let onDismiss: () -> Void
+
+  init(card: Card?, cardNamespace: Namespace.ID, onDismiss: @escaping () -> Void) {
+    _card = .init(initialValue: card ?? Card.sampleCards[0])
+    self.cardNamespace = cardNamespace
+    self.onDismiss = onDismiss
+
+    self.isNew = card == nil
+  }
 
   public var body: some View {
     GeometryReader { geometry in
@@ -186,7 +201,7 @@ public struct EditView: View {
           }
         )
         .opacity(isDismissed ? 0 : 1)
-//        .animation(.easeInOut, value: isDismissed)
+        // .animation(.easeInOut, value: isDismissed)
       }
       .coordinateSpace(.named("scroll"))
       //      .onPreferenceChange(CardFrameKey.self) { cardFrame = $0; print("onPrefChange: \($0)") }
