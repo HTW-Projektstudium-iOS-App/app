@@ -5,7 +5,9 @@ struct HomeView: View {
   @State private var isDragging: Bool = false
   @State private var isStackExpanded: Bool = false
   @State private var focusedCardID: UUID?
-
+  @State private var lastScrollOffset: CGFloat = 0
+  @State private var scrollVelocity: CGFloat = 0
+  @State private var lastScrollTime: Date = Date()
   private let userCard = Card.sampleCards[1]
 
   var body: some View {
@@ -46,22 +48,38 @@ struct HomeView: View {
 
         // CardStack section
         VStack(spacing: 0) {
-            // Drag Handler Line to indicate Gesture
-            RoundedRectangle(cornerRadius: 3)
-                .fill(Color(UIColor.tertiaryLabel))
-                .frame(width: 40, height: 6)
-                .padding(.top, 10)
-
           // CardStack content
           CardStack()
-            .padding(.top, 12)
+            .scrollDisabled(!isStackExpanded)
+            .allowsHitTesting(isStackExpanded)
+            .simultaneousGesture(
+              DragGesture()
+                .onChanged { value in
+                  // Only handle when expanded and scrolling down from top
+                  if isStackExpanded && value.translation.height > 0 {
+                    dragOffset = value.translation.height * 0.3
+                  }
+                }
+                .onEnded { value in
+                  if isStackExpanded && value.translation.height > 230 {
+                    // Collapse the stack
+                    withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                      isStackExpanded = false
+                      dragOffset = 0
+                    }
+                  } else {
+                    // Reset drag offset
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                      dragOffset = 0
+                    }
+                  }
+                }
+            )
         }
         .frame(height: geometry.size.height)
-        .background(
-          RoundedRectangle(cornerRadius: 20)
-            .fill(Color(UIColor.systemBackground))
-        )
-        .offset(y: isStackExpanded ? 0 : geometry.size.height * 0.5) // Sets beginning of Cardstack on Page
+        .background(Color.clear.contentShape(Rectangle()))
+        .clipShape(RoundedRectangle(cornerRadius: isStackExpanded ? 20 : 0))
+        .offset(y: isStackExpanded ? 0 : geometry.size.height * 0.5) //  wo CardStack beginnt
         .offset(y: dragOffset)
         .gesture(
           DragGesture()
@@ -69,21 +87,21 @@ struct HomeView: View {
               if !isDragging {
                 isDragging = true
               }
-
               if !isStackExpanded {
                 dragOffset = min(0, value.translation.height) * 0.3
               }
             }
             .onEnded { value in
-              let shouldExpand = shouldExpandStack(
-                translation: value.translation.height,
-                velocity: value.predictedEndTranslation.height
-              )
-
-              withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                isStackExpanded = shouldExpand
-                dragOffset = 0
-                isDragging = false
+              if !isStackExpanded {
+                let shouldExpand = shouldExpandStack(
+                  translation: value.translation.height,
+                  velocity: value.predictedEndTranslation.height
+                )
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                  isStackExpanded = shouldExpand
+                  dragOffset = 0
+                  isDragging = false
+                }
               }
             }
         )
@@ -97,7 +115,6 @@ struct HomeView: View {
   }
 
   // MARK: - Helper
-
   private func shouldExpandStack(translation: CGFloat, velocity: CGFloat) -> Bool {
     if velocity < -800 {
       return true

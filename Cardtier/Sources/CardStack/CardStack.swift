@@ -37,7 +37,7 @@ struct CardStack: View {
                 .frame(height: focusedCardID != nil ? 250 : 0)
                 .id("stackAnchor")
 
-            ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
+              ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
                 if card.id != focusedCardID {
                   CardView(
                     card: card,
@@ -71,6 +71,7 @@ struct CardStack: View {
         .animation(.cardStack, value: focusedCardID)
       }
     }
+    .background(Color.clear)
     .onChange(of: focusedCardID) { _, newValue in
       if newValue != nil {
         withAnimation(.cardStack) {
@@ -158,5 +159,5 @@ struct CardStack: View {
 }
 
 #Preview {
-    CardStack()
+  CardStack()
 }
