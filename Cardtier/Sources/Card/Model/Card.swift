@@ -17,9 +17,6 @@ import SwiftUI
   /// Professional title (e.g., "CEO")
   var title: String?
 
-  /// Role or position (e.g., "Executive Management")
-  var role: String?
-
   /// Company or organization name
   var company: String?
 
@@ -58,7 +55,6 @@ import SwiftUI
     isUserCard: Bool = true,
     name: String,
     title: String? = nil,
-    role: String? = nil,
     company: String? = nil,
     contactInformation: ContactInformation = ContactInformation(),
     businessAddress: Address? = nil,
@@ -73,7 +69,6 @@ import SwiftUI
     self.name = name
     self.isUserCard = isUserCard
     self.title = title
-    self.role = role
     self.company = company
     self.contactInformation = contactInformation
     self.businessAddress = businessAddress

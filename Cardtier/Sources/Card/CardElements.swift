@@ -5,7 +5,7 @@ import SwiftUI
 struct CardElements {
 
   /// Available shapes for logo containers
-  public enum LogoShape {
+  enum LogoShape {
     case oval
     case circle
     case square

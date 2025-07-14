@@ -37,8 +37,8 @@ struct TraditionalCardFront: View {
                   .font(CardElements.customFont(name: card.style.fontName, size: 12))
                   .foregroundColor(card.style.secondaryColor ?? .black)
               }
-              if let role = card.role {
-                Text("| \(role)")
+              if let title = card.title {
+                Text("| \(title)")
                   .font(CardElements.customFont(name: card.style.fontName, size: 12))
                   .foregroundColor(card.style.secondaryColor ?? .black)
               }

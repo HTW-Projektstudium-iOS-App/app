@@ -1,20 +1,10 @@
 import SwiftUI
 
-struct CardFrameKey: PreferenceKey {
-  static var defaultValue: CGRect = CGRect.null
-  static func reduce(
-    value: inout CGRect,
-    nextValue: () -> CGRect
-  ) {
-    value = nextValue()
-  }
-}
-
-public struct EditView: View {
+struct EditView: View {
   @Environment(\.modelContext) private var modelContext
 
   var scrollDrag: some Gesture {
-    DragGesture(minimumDistance: 0, coordinateSpace: .named("scroll"))
+    DragGesture(minimumDistance: 10, coordinateSpace: .named("scroll"))
       .onChanged { value in
         if !isDragging {
           isDragging = true
@@ -31,8 +21,10 @@ public struct EditView: View {
           lastDistance = formOffset ?? 0.0 - (dragStartFormOffset ?? 0.0)
           onDismiss()
 
-          if isNew {
-            modelContext.insert(card)
+          if cardModel == nil {
+            modelContext.insert(cardData.createCard())
+          } else {
+            cardData.apply(to: cardModel!)
           }
         }
 
@@ -63,29 +55,36 @@ public struct EditView: View {
     Double(cardFrame?.minY ?? 0.0) - Double(dragStartCardFrame?.minY ?? 0.0)
   }
 
-  @State private var card: Card
-  private let isNew: Bool
+  private var cardModel: Card?
+  @State private var cardData: CardDraft
+
   let cardNamespace: Namespace.ID
   let onDismiss: () -> Void
 
   init(card: Card?, cardNamespace: Namespace.ID, onDismiss: @escaping () -> Void) {
-    _card = .init(initialValue: card ?? Card.sampleCards[0])
+    self.cardModel = card
     self.cardNamespace = cardNamespace
     self.onDismiss = onDismiss
 
-    self.isNew = card == nil
+    if let card = cardModel {
+      cardData = CardDraft(from: card)
+    } else {
+      cardData = CardDraft()
+    }
   }
 
-  public var body: some View {
+  var body: some View {
     GeometryReader { geometry in
       ScrollView {
         ScrollView(.horizontal, showsIndicators: false) {
           HStack(spacing: 10) {
+            // TODO: hide info button when editing
             CardView(
-              card: card, focusedCardID: .constant(nil), isFlipped: false, isScrolling: false,
+              card: cardData.createCard(), focusedCardID: .constant(nil), isFlipped: false,
+              isScrolling: false,
               scrollVelocity: 0
             )
-            .matchedGeometryEffect(id: card.id, in: cardNamespace)
+            .matchedGeometryEffect(id: cardModel?.id ?? UUID(), in: cardNamespace)
             .card(index: 0, zIndex: 0)
             .frame(width: geometry.size.width - 40)
             .onGeometryChange(
@@ -102,7 +101,8 @@ public struct EditView: View {
             .id(0)
 
             CardView(
-              card: card, focusedCardID: .constant(nil), isFlipped: true, isScrolling: false,
+              card: cardData.createCard(), focusedCardID: .constant(nil), isFlipped: true,
+              isScrolling: false,
               scrollVelocity: 0
             )
             .card(index: 0, zIndex: 0)
@@ -135,45 +135,11 @@ public struct EditView: View {
           )
         }
 
-        //        Text("\(currentScrollOffset), \(activeCardIndex)")
-
         Form {
           if activeCardIndex == 0 {
-            Section(header: Text("Personal Information")) {
-              TextField("Name", text: .constant(card.name))
-              TextField("Title", text: .constant(card.title ?? ""))
-              TextField("Company", text: .constant(card.company ?? ""))
-            }
-            .transition(.asymmetric(insertion: .opacity, removal: .opacity))
-
-            Section(header: Text("Styling")) {
-              ColorPicker("Background Color", selection: .constant(card.style.primaryColor))
-              ColorPicker(
-                "Text Color", selection: .constant(card.style.secondaryColor ?? .black))
-              SliderField(
-                title: "Font Size",
-                value: .constant(15),
-                range: 12...24
-              )
-            }
+            CardEditor(for: .front, card: cardData)
           } else {
-            Section(header: Text("Contact Information")) {
-              TextField("Email", text: .constant(card.contactInformation.email ?? ""))
-              TextField("Phone", text: .constant(card.contactInformation.phoneNumber ?? ""))
-              TextField(
-                "Website", text: .constant(card.contactInformation.websiteURL?.path() ?? ""))
-            }
-
-            Section(header: Text("Styling")) {
-              ColorPicker("Background Color", selection: .constant(card.style.primaryColor))
-              ColorPicker(
-                "Text Color", selection: .constant(card.style.secondaryColor ?? .black))
-              SliderField(
-                title: "Font Size",
-                value: .constant(15),
-                range: 10...20
-              )
-            }
+            CardEditor(for: .back, card: cardData)
           }
         }
         .animation(.easeInOut, value: activeCardIndex)
@@ -201,14 +167,11 @@ public struct EditView: View {
           }
         )
         .opacity(isDismissed ? 0 : 1)
-        // .animation(.easeInOut, value: isDismissed)
       }
       .coordinateSpace(.named("scroll"))
-      //      .onPreferenceChange(CardFrameKey.self) { cardFrame = $0; print("onPrefChange: \($0)") }
       .simultaneousGesture(scrollDrag)
       .background(Color(.systemGroupedBackground))
     }
-    //    .transition(.slide)
   }
 }
 

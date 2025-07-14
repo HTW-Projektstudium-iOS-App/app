@@ -28,7 +28,7 @@ extension Card {
     }
 
     /// Font name for the card text
-    let fontName: String?
+    let fontName: String
 
     /// Design style for the card (Modern, Minimal, etc.)
     let designStyle: DesignType
@@ -37,7 +37,7 @@ extension Card {
     init(
       primaryColor: Color = .white,
       secondaryColor: Color? = nil,
-      fontName: String? = nil,
+      fontName: String = "Courier New",
       designStyle: DesignType = .modern
     ) {
       self.primaryColorHex = primaryColor.hexString

@@ -7,7 +7,6 @@ extension Card {
     Card(
       name: "John Doe",
       title: "Product Manager",
-      role: "Management",
       company: "Acme Corp",
       contactInformation: ContactInformation(
         email: "john@acme.com",
@@ -31,7 +30,6 @@ extension Card {
     Card(
       name: "Jane Smith",
       title: "Software Engineer",
-      role: "Engineering",
       company: "Tech Solutions",
       contactInformation: ContactInformation(
         email: "jane@techsolutions.com",
@@ -55,7 +53,6 @@ extension Card {
     Card(
       name: "Alice Johnson",
       title: "Data Scientist",
-      role: "Research",
       company: "Global Industries",
       contactInformation: ContactInformation(
         email: "alice@globalindustries.co.uk",
@@ -67,7 +64,7 @@ extension Card {
       style: CardStyle(
         primaryColor: .red,
         secondaryColor: .black,
-        fontName: "Courier",
+        fontName: "Courier New",
         designStyle: .modern
       ),
       collectionDate: Date(),
@@ -116,7 +113,6 @@ extension Card {
     Card(
       name: "Diana White",
       title: "Medical Advisor",
-      role: "Healthcare",
       company: "Health Solutions",
       contactInformation: ContactInformation(
         email: "diana@healthsolutions.org",
@@ -196,7 +192,6 @@ extension Card {
     Card(
       name: "Hannah Purple",
       title: "Curriculum Developer",
-      role: "Education",
       company: "Education Org",
       contactInformation: ContactInformation(
         email: "hannah@eduorg.edu",

@@ -5,7 +5,6 @@ struct CardDTO: Codable {
   var id: UUID
   var name: String
   var title: String?
-  var role: String?
   var company: String?
   var contactInformation: Card.ContactInformation
   var businessAddress: Card.Address?
@@ -21,7 +20,6 @@ struct CardDTO: Codable {
     self.id = card.id
     self.name = card.name
     self.title = card.title
-    self.role = card.role
     self.company = card.company
     self.contactInformation = card.contactInformation
     self.businessAddress = card.businessAddress
@@ -39,7 +37,6 @@ struct CardDTO: Codable {
       isUserCard: false,
       name: name,
       title: title,
-      role: role,
       company: company,
       contactInformation: contactInformation,
       businessAddress: businessAddress,

@@ -16,56 +16,58 @@ struct ContentView: View {
   @State private var editingCard = false
 
   var body: some View {
-    VStack {
-      // TODO: add proper onboarding screen
-      if editingCard || userCard == nil {
-        EditView(card: userCard, cardNamespace: namespace) {
-          withAnimation {
-            editingCard = false
+    NavigationStack {
+      VStack {
+        // TODO: add proper onboarding screen
+        if editingCard || userCard == nil {
+          EditView(card: userCard, cardNamespace: namespace) {
+            withAnimation {
+              editingCard = false
+            }
           }
-        }
-      } else {
-        CardView(
-          card: userCard!, focusedCardID: .constant(nil), isFlipped: false, isScrolling: false,
-          scrollVelocity: 0
-        )
-        .matchedGeometryEffect(id: userCard!.id, in: namespace, isSource: true)
-        .card(index: 0, zIndex: 0)
-        .onTapGesture {
-          withAnimation {
-            editingCard.toggle()
+        } else {
+          CardView(
+            card: userCard!, focusedCardID: .constant(nil), isFlipped: false, isScrolling: false,
+            scrollVelocity: 0
+          )
+          .matchedGeometryEffect(id: userCard!.id, in: namespace, isSource: true)
+          .card(index: 0, zIndex: 0)
+          .onTapGesture {
+            withAnimation {
+              editingCard.toggle()
+            }
           }
+          .padding(.horizontal)
+
+          Spacer()
+
+          ZStack {
+            CardView(
+              card: Card.sampleCards[0], focusedCardID: .constant(nil), isFlipped: false,
+              isScrolling: false,
+              scrollVelocity: 0
+            )
+            .card(index: 0, zIndex: 3)
+            .offset(y: 50)
+
+            CardView(
+              card: Card.sampleCards[1], focusedCardID: .constant(nil), isFlipped: false,
+              isScrolling: false,
+              scrollVelocity: 0
+            )
+            .card(index: 0, zIndex: 2)
+
+            CardView(
+              card: Card.sampleCards[2], focusedCardID: .constant(nil), isFlipped: false,
+              isScrolling: false,
+              scrollVelocity: 0
+            )
+            .card(index: 0, zIndex: 1)
+            .offset(y: -50)
+          }
+          .transition(.move(edge: .bottom).animation(.easeInOut(duration: 5.25)))
+          .padding(.horizontal)
         }
-        .padding(.horizontal)
-
-        Spacer()
-
-        ZStack {
-          CardView(
-            card: Card.sampleCards[1], focusedCardID: .constant(nil), isFlipped: false,
-            isScrolling: false,
-            scrollVelocity: 0
-          )
-          .card(index: 0, zIndex: 3)
-          .offset(y: 50)
-
-          CardView(
-            card: Card.sampleCards[1], focusedCardID: .constant(nil), isFlipped: false,
-            isScrolling: false,
-            scrollVelocity: 0
-          )
-          .card(index: 0, zIndex: 2)
-
-          CardView(
-            card: Card.sampleCards[1], focusedCardID: .constant(nil), isFlipped: false,
-            isScrolling: false,
-            scrollVelocity: 0
-          )
-          .card(index: 0, zIndex: 1)
-          .offset(y: -50)
-        }
-        .transition(.move(edge: .bottom).animation(.easeInOut(duration: 5.25)))
-        .padding(.horizontal)
       }
     }
   }

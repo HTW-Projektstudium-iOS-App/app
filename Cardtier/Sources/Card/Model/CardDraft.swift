@@ -4,24 +4,24 @@ import SwiftUI
 
 @Observable
 class CardDraft {
-  var name: String
-  var title: String
-  var role: String
-  var company: String
+  var name: String = ""
+  var title: String = ""
+  var company: String = ""
 
-  var contactInformation: ContactInformation
+  var contactInformation: ContactInformation = ContactInformation()
 
-  var businessAddress: Address
-  var personalAddress: Address
+  var businessAddress: Address = Address()
+  var personalAddress: Address = Address()
 
-  var slogan: String
-  var logos: [Data]
-  var style: CardStyle
+  var slogan: String = ""
+  var logos: [Data] = []
+  var style: CardStyle = CardStyle()
+
+  init() {}
 
   init(from card: Card) {
     name = card.name
     title = card.title ?? ""
-    role = card.role ?? ""
     company = card.company ?? ""
 
     contactInformation = ContactInformation(
@@ -54,7 +54,7 @@ class CardDraft {
 
     style = CardStyle(
       primaryColor: card.style.primaryColor,
-      secondaryColor: card.style.secondaryColor,
+      secondaryColor: card.style.secondaryColor ?? .black,
       fontName: card.style.fontName,
       designStyle: card.style.designStyle
     )
@@ -63,7 +63,6 @@ class CardDraft {
   func apply(to card: Card) {
     card.name = name
     card.title = title
-    card.role = role
     card.company = company
 
     card.contactInformation = Card.ContactInformation(
@@ -105,7 +104,6 @@ class CardDraft {
     Card(
       name: name,
       title: title,
-      role: role,
       company: company,
       contactInformation: Card.ContactInformation(
         email: contactInformation.email,
@@ -187,15 +185,16 @@ class CardDraft {
 
   @Observable
   class CardStyle {
+    var test: String = "test"
     var primaryColor: Color
-    var secondaryColor: Color?
-    var fontName: String?
+    var secondaryColor: Color
+    var fontName: String
     var designStyle: Card.DesignType
 
     init(
       primaryColor: Color = .white,
-      secondaryColor: Color? = nil,
-      fontName: String? = nil,
+      secondaryColor: Color = .black,
+      fontName: String = "Courier New",
       designStyle: Card.DesignType = .modern
     ) {
       self.primaryColor = primaryColor
