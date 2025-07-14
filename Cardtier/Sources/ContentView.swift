@@ -2,7 +2,13 @@ import SwiftUI
 
 struct ContentView: View {
   var body: some View {
-    CardStack()
+    ZStack {
+      Image(asset: CardtierImages(name: "Background Gradient"))
+        .resizable()
+        .ignoresSafeArea()
+
+      CardStack()
+    }
   }
 }
 

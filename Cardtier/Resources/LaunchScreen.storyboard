@@ -15,8 +15,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="LogoGold" translatesAutoresizingMaskIntoConstraints="NO" id="XkU-MW-1Zz">
-                                <rect key="frame" x="-27" y="253" width="447" height="167"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Background Gradient" translatesAutoresizingMaskIntoConstraints="NO" id="dfq-ve-Jkb">
+                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="2aP-fN-SG0">
+                                <rect key="frame" x="23" y="253" width="346" height="127"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                         </subviews>
@@ -30,6 +34,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LogoGold" width="4297" height="1432"/>
+        <image name="Background Gradient" width="6000" height="3375"/>
+        <image name="Logo" width="3003" height="535"/>
     </resources>
 </document>

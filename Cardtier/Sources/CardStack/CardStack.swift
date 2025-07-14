@@ -71,7 +71,6 @@ struct CardStack: View {
         .animation(.cardStack, value: focusedCardID)
       }
     }
-    .background(Color(UIColor.systemGroupedBackground))
     .onChange(of: focusedCardID) { _, newValue in
       if newValue != nil {
         withAnimation(.cardStack) {
