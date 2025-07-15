@@ -1,3 +1,4 @@
+import MapKit
 import SwiftUI
 
 /// A sheet view displaying detailed information about a card.
@@ -24,8 +25,6 @@ struct CardInfoSheet: View {
         }
 
         collectionDataSection
-
-        Spacer(minLength: 20)
       }
       .padding(16)
     }
@@ -40,20 +39,20 @@ struct CardInfoSheet: View {
   private var cardHeader: some View {
     VStack(alignment: .leading, spacing: 4) {
       Text(card.name)
-        .font(CardElements.customFont(name: card.style.fontName, size: 20, weight: .bold))
+        .font(CardElements.customFont(name: card.style.fontName, size: 32, weight: .heavy))
         .foregroundColor(card.style.secondaryColor ?? .black)
 
       // Optional title
       if let title = card.title {
         Text(title)
-          .font(CardElements.customFont(name: card.style.fontName, size: 16, weight: .medium))
+          .font(CardElements.customFont(name: card.style.fontName, size: 24, weight: .bold))
           .foregroundColor(card.style.secondaryColor ?? .gray)
       }
 
       // Optional company
       if let company = card.company {
         Text(company)
-          .font(CardElements.customFont(name: card.style.fontName, size: 14))
+          .font(CardElements.customFont(name: card.style.fontName, size: 16))
           .foregroundColor(card.style.secondaryColor ?? .black)
       }
     }
@@ -155,7 +154,7 @@ struct CardInfoSheet: View {
           .frame(width: 20)
         Text(
           """
-          \(card.collectionLocation.latitude, specifier: "%.4f"), \
+          \(card.collectionLocation.latitude, specifier: "%.4f")  \
           \(card.collectionLocation.longitude, specifier: "%.4f")
           """
         )
@@ -164,6 +163,19 @@ struct CardInfoSheet: View {
       .foregroundColor(
         card.style.secondaryColor ?? .black
       )
+
+      Map(
+        initialPosition: MapCameraPosition.region(
+          MKCoordinateRegion(
+            center: card.collectionLocation,
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))),
+        interactionModes: []
+      ) {
+        Marker("Collection Location", coordinate: card.collectionLocation)
+      }
+      .frame(height: 150)
+      .clipShape(RoundedRectangle(cornerRadius: 8))
+
     }
   }
 
