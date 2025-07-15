@@ -15,6 +15,10 @@ struct CardStack: View {
   @State private var isDragging: Bool = false
   @State private var isScrolling: Bool = false
 
+  let cardOffset: CGFloat
+
+  let onScrollOffsetChange: (CGFloat) -> Void
+
   var body: some View {
     ZStack(alignment: .top) {
       ScrollViewReader { proxy in
@@ -33,13 +37,7 @@ struct CardStack: View {
               }
 
             VStack(spacing: 0) {
-              // Invisible spacer that creates room at the top when a card is focused
-              // Pushes the card stack down to make space for the focused card
-              Color.clear
-                .frame(height: focusedCardID != nil ? 250 : 0)
-                .id("stackAnchor")
-
-              ForEach(cards.enumerated(), id: \.element.id) { index, card in
+              ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
                 if card.id != focusedCardID {
                   CardView(
                     card: card,
@@ -49,6 +47,8 @@ struct CardStack: View {
                     scrollVelocity: scrollVelocity
                   )
                   .card(index: index, zIndex: cards.count - index)
+                  .cardAnimation(removalEdge: .top)
+                  .offset(y: cardOffset * CGFloat(index))
                   .onTapGesture {
                     withAnimation {
                       focusedCardID = card.id
@@ -57,9 +57,16 @@ struct CardStack: View {
                 }
               }
             }
-            .padding(.top, 180)
-            .padding(.bottom, 220)
             .animation(.cardStack, value: focusedCardID)
+            .padding(.top, focusedCardID != nil ? 250 : 0)
+          }
+          .onGeometryChange(
+            for: CGFloat.self,
+            of: { proxy in
+              proxy.frame(in: .scrollView).minY
+            }
+          ) {
+            onScrollOffsetChange($1)
           }
         }
         .onAppear {
@@ -77,6 +84,7 @@ struct CardStack: View {
           scrollVelocity: scrollVelocity
         )
         .focusedCard()
+        .cardAnimation(removalEdge: .top)
         .onTapGesture {
           withAnimation(.cardFlip) {
             isFocusedCardFlipped.toggle()
@@ -85,6 +93,7 @@ struct CardStack: View {
         .animation(.cardStack, value: focusedCardID)
       }
     }
+    .background(Color.clear)
     .onChange(of: focusedCardID) { _, newValue in
       if newValue != nil {
         withAnimation(.cardStack) {
@@ -174,5 +183,7 @@ struct CardStack: View {
 }
 
 #Preview {
-  CardStack()
+  CardStack(cardOffset: 0) { _ in
+    // do nothing
+  }
 }
