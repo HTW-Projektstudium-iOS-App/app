@@ -69,7 +69,7 @@ struct EditView: View {
     if let card = cardModel {
       cardData = CardDraft(from: card)
     } else {
-      cardData = CardDraft()
+      cardData = CardDraft(from: Card.sampleUserCard)
     }
   }
 

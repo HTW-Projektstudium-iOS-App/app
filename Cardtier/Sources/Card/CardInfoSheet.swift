@@ -26,13 +26,14 @@ struct CardInfoSheet: View {
 
         collectionDataSection
       }
-      .padding(16)
+      .padding()
     }
+    .ignoresSafeArea()
+    .background(Color(.systemBackground))
     // Add close button at the bottom, respecting safe area
     .safeAreaInset(edge: .bottom) {
       closeButton
     }
-    .background(Color(.systemBackground))
   }
 
   /// Card header with name, title, and company
@@ -197,11 +198,5 @@ struct CardInfoSheet: View {
     .buttonStyle(.borderedProminent)
     .tint(card.style.secondaryColor ?? .blue)
     .padding(.horizontal, 16)
-    .padding(.bottom, 4)
-    .background(
-      Rectangle()
-        .fill(.ultraThinMaterial)
-        .ignoresSafeArea()
-    )
   }
 }
