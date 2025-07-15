@@ -24,6 +24,8 @@ struct ContentView: View {
 
   @State private var stackScrollOffset: CGFloat = 0
 
+  @State private var scrollOffset: CGFloat = 0
+
   var body: some View {
     GeometryReader { geometry in
       NavigationStack {
@@ -63,30 +65,18 @@ struct ContentView: View {
               .zIndex(100)
 
               VStack(spacing: 0) {
-                CardStack {
+                CardStack(cardOffset: !isStackExpanded ? -150 : 20) {
                   stackScrollOffset = $0
-                  print("offset: \(stackScrollOffset)")
                 }
                 .scrollDisabled(!isStackExpanded)
                 .allowsHitTesting(isStackExpanded)
                 .simultaneousGesture(
                   DragGesture()
-                    .onChanged { value in
-                      // Only handle when expanded and scrolling down from top
-                      if isStackExpanded && value.translation.height > 0 && stackScrollOffset > 0 {
-                        dragOffset = value.translation.height * 0.3
-                      }
-                    }
                     .onEnded { value in
                       if isStackExpanded && value.translation.height > 100 && stackScrollOffset > 0
                       {
                         withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
                           isStackExpanded = false
-                          dragOffset = 0
-                        }
-                      } else {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                          dragOffset = 0
                         }
                       }
                     }
@@ -95,14 +85,17 @@ struct ContentView: View {
               .padding(.top, geometry.safeAreaInsets.top)
               .ignoresSafeArea()
               .background(Color.clear.contentShape(Rectangle()))
-              .offset(y: isStackExpanded ? 0 : geometry.size.height * 0.5)  //  wo CardStack beginnt
-              .offset(y: dragOffset)
+              .offset(
+                y: isStackExpanded
+                  ? 0 : geometry.size.height * 0.5 + dragOffset + -stackScrollOffset
+              )
               .gesture(
                 DragGesture()
                   .onChanged { value in
                     if !isDragging {
                       isDragging = true
                     }
+
                     if !isStackExpanded {
                       dragOffset = min(0, value.translation.height) * 0.3
                     }
@@ -113,6 +106,7 @@ struct ContentView: View {
                         translation: value.translation.height,
                         velocity: value.predictedEndTranslation.height
                       )
+
                       withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
                         isStackExpanded = shouldExpand
                         dragOffset = 0
@@ -121,7 +115,7 @@ struct ContentView: View {
                     }
                   }
               )
-              .animation(.spring(response: 0.5, dampingFraction: 0.8), value: isStackExpanded)
+              // .animation(.spring(response: 0.5, dampingFraction: 0.8), value: isStackExpanded)
               .transition(.move(edge: .bottom))
               .padding(.horizontal)
             }

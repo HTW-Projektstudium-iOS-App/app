@@ -31,7 +31,6 @@ struct CardModifier: ViewModifier {
     content
       .baseCard()
       .zIndex(Double(zIndex))
-      .offset(y: CGFloat(index) * -25)
   }
 }
 
