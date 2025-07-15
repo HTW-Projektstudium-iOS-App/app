@@ -37,8 +37,8 @@ struct TraditionalCardFront: View {
                   .font(CardElements.customFont(name: card.style.fontName, size: 12))
                   .foregroundColor(card.style.secondaryColor ?? .black)
               }
-              if let role = card.role {
-                Text("| \(role)")
+              if let title = card.title {
+                Text("| \(title)")
                   .font(CardElements.customFont(name: card.style.fontName, size: 12))
                   .foregroundColor(card.style.secondaryColor ?? .black)
               }
@@ -94,7 +94,7 @@ struct TraditionalCardBack: View {
         // Website URL at top right
         HStack {
           Spacer()
-          if let website = card.contactInformation.websiteURL?.absoluteString {
+          if let website = card.contactInformation.websiteURL {
             Text(website)
               .font(CardElements.customFont(name: card.style.fontName, size: 12))
               .foregroundColor(card.style.secondaryColor ?? .black)
@@ -151,7 +151,7 @@ struct TraditionalCardBack: View {
               .foregroundColor(card.style.secondaryColor ?? .black)
               .italic()
           }
-          if let linkedIn = card.contactInformation.linkedInURL?.absoluteString {
+          if let linkedIn = card.contactInformation.linkedInURL {
             Text(linkedIn)
               .font(CardElements.customFont(name: card.style.fontName, size: 12))
               .foregroundColor(card.style.secondaryColor ?? .black)
