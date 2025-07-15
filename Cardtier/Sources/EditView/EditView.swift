@@ -20,12 +20,12 @@ struct EditView: View {
           isDismissed = true
           lastDistance = formOffset ?? 0.0 - (dragStartFormOffset ?? 0.0)
           onDismiss()
+        }
 
-          if cardModel == nil {
-            modelContext.insert(cardData.createCard())
-          } else {
-            cardData.apply(to: cardModel!)
-          }
+        if cardModel == nil {
+          modelContext.insert(cardData.createCard())
+        } else {
+          cardData.apply(to: cardModel!)
         }
 
         isDragging = false
@@ -84,7 +84,7 @@ struct EditView: View {
               isScrolling: false,
               scrollVelocity: 0
             )
-            .matchedGeometryEffect(id: cardModel?.id ?? UUID(), in: cardNamespace)
+            .matchedGeometryEffect(id: cardData.id, in: cardNamespace)
             .card(index: 0, zIndex: 0)
             .frame(width: geometry.size.width - 40)
             .onGeometryChange(

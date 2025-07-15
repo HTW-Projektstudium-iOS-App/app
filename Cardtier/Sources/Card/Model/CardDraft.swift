@@ -3,7 +3,9 @@ import Foundation
 import SwiftUI
 
 @Observable
+// TODO: do we actually need this instead of just using the model?
 class CardDraft {
+  var id: UUID = UUID()
   var name: String = ""
   var title: String = ""
   var company: String = ""
@@ -20,6 +22,7 @@ class CardDraft {
   init() {}
 
   init(from card: Card) {
+    id = card.id
     name = card.name
     title = card.title ?? ""
     company = card.company ?? ""
@@ -61,6 +64,7 @@ class CardDraft {
   }
 
   func apply(to card: Card) {
+    card.id = id
     card.name = name
     card.title = title
     card.company = company
@@ -102,6 +106,7 @@ class CardDraft {
 
   func createCard() -> Card {
     Card(
+      id: id,
       name: name,
       title: title,
       company: company,

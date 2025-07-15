@@ -4,6 +4,7 @@ enum CardSide { case front, back }
 
 /// Displays a single business card that can be flipped and shows metadata
 /// This view handles the main card presentation, animations, and interactions
+/// TODO: add very slight corner radius
 struct CardView: View {
   let card: Card
 

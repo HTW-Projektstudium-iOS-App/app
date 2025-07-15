@@ -16,16 +16,12 @@ struct ContentView: View {
   @State private var editingCard = false
 
   var body: some View {
-    ZStack {
-      Image(asset: CardtierImages(name: "Background Gradient"))
-        .resizable()
-        .ignoresSafeArea()
-
     NavigationStack {
       ZStack {
         Image(asset: CardtierImages(name: "Background Gradient"))
           .resizable()
           .ignoresSafeArea()
+
         VStack {
           // TODO: add proper onboarding screen
           if editingCard || userCard == nil {
@@ -34,12 +30,13 @@ struct ContentView: View {
                 editingCard = false
               }
             }
-          } else {
+          } else if let userCard {
             CardView(
-              card: userCard!, focusedCardID: .constant(nil), isFlipped: false, isScrolling: false,
+              card: userCard, focusedCardID: .constant(nil), isFlipped: false, isScrolling: false,
               scrollVelocity: 0
             )
-            .matchedGeometryEffect(id: userCard!.id, in: namespace, isSource: true)
+            // FIXME: this is broken when creating a new card
+            .matchedGeometryEffect(id: userCard.id, in: namespace)
             .card(index: 0, zIndex: 0)
             .onTapGesture {
               withAnimation {
