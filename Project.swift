@@ -19,7 +19,8 @@ let project = Project(
           "UILaunchScreen": [
             "UIColorName": "",
             "UIImageName": "",
-          ]
+          ],
+          "UILaunchStoryboardName": "LaunchScreen",
         ]
       ),
       sources: ["Cardtier/Sources/**"],
