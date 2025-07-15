@@ -22,6 +22,8 @@ struct ContentView: View {
   @State private var scrollVelocity: CGFloat = 0
   @State private var lastScrollTime: Date = Date()
 
+  @State private var stackScrollOffset: CGFloat = 0
+
   var body: some View {
     GeometryReader { geometry in
       NavigationStack {
@@ -62,30 +64,33 @@ struct ContentView: View {
 
             VStack(spacing: 0) {
               // CardStack content
-              CardStack()
-                .scrollDisabled(!isStackExpanded)
-                .allowsHitTesting(isStackExpanded)
-                .simultaneousGesture(
-                  DragGesture()
-                    .onChanged { value in
-                      // Only handle when expanded and scrolling down from top
-                      if isStackExpanded && value.translation.height > 0 {
-                        dragOffset = value.translation.height * 0.3
+              CardStack {
+                stackScrollOffset = $0
+                print("offset: \(stackScrollOffset)")
+              }
+              .scrollDisabled(!isStackExpanded)
+              .allowsHitTesting(isStackExpanded)
+              .simultaneousGesture(
+                DragGesture()
+                  .onChanged { value in
+                    // Only handle when expanded and scrolling down from top
+                    if isStackExpanded && value.translation.height > 0 && stackScrollOffset > 0 {
+                      dragOffset = value.translation.height * 0.3
+                    }
+                  }
+                  .onEnded { value in
+                    if isStackExpanded && value.translation.height > 100 && stackScrollOffset > 0 {
+                      withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
+                        isStackExpanded = false
+                        dragOffset = 0
+                      }
+                    } else {
+                      withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                        dragOffset = 0
                       }
                     }
-                    .onEnded { value in
-                      if isStackExpanded && value.translation.height > 100 {
-                        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                          isStackExpanded = false
-                          dragOffset = 0
-                        }
-                      } else {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                          dragOffset = 0
-                        }
-                      }
-                    }
-                )
+                  }
+              )
             }
             .padding(.top, geometry.safeAreaInsets.top)
             .ignoresSafeArea()

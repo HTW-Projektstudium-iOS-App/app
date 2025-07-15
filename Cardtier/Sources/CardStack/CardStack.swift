@@ -15,6 +15,8 @@ struct CardStack: View {
   @State private var isDragging: Bool = false
   @State private var isScrolling: Bool = false
 
+  let onScrollOffsetChange: (CGFloat) -> Void
+
   var body: some View {
     ZStack(alignment: .top) {
       ScrollViewReader { proxy in
@@ -58,6 +60,14 @@ struct CardStack: View {
               }
             }
             .animation(.cardStack, value: focusedCardID)
+          }
+          .onGeometryChange(
+            for: CGFloat.self,
+            of: { proxy in
+              proxy.frame(in: .scrollView).minY
+            }
+          ) {
+            onScrollOffsetChange($1)
           }
         }
         .onAppear {
@@ -173,5 +183,7 @@ struct CardStack: View {
 }
 
 #Preview {
-  CardStack()
+  CardStack { _ in
+    // do nothing
+  }
 }
