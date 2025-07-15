@@ -1,31 +1,16 @@
 import SwiftUI
 
 private struct BaseCardModifier: ViewModifier {
-  let removalEdge: Edge
-
   func body(content: Content) -> some View {
     content
       .aspectRatio(1.6, contentMode: .fit)
-      .padding(.horizontal, 20)
-      .transition(
-        .asymmetric(
-          insertion: .opacity
-            .combined(with: .move(edge: .bottom))
-            .animation(.easeOut(duration: 0.4)),
-          removal: .opacity
-            .combined(with: .move(edge: removalEdge))
-            .animation(.easeIn(duration: 0.35))
-        )
-      )
-
   }
 }
 
 struct FocusedCardModifier: ViewModifier {
-
   func body(content: Content) -> some View {
     content
-      .baseCard(removalEdge: .bottom)
+      .baseCard()
       .zIndex(1000)
       .padding(.top, 40)
       .shadow(radius: 10, x: 0, y: 3)
@@ -44,15 +29,33 @@ struct CardModifier: ViewModifier {
 
   func body(content: Content) -> some View {
     content
-      .baseCard(removalEdge: .top)
+      .baseCard()
       .zIndex(Double(zIndex))
       .offset(y: CGFloat(index) * -25)
   }
 }
 
+struct CardAnimationModifier: ViewModifier {
+  let removalEdge: Edge
+
+  func body(content: Content) -> some View {
+    content
+      .transition(
+        .asymmetric(
+          insertion: .opacity
+            .combined(with: .move(edge: .bottom))
+            .animation(.easeOut(duration: 0.4)),
+          removal: .opacity
+            .combined(with: .move(edge: removalEdge))
+            .animation(.easeIn(duration: 0.35))
+        )
+      )
+  }
+}
+
 extension View {
-  fileprivate func baseCard(removalEdge: Edge) -> some View {
-    modifier(BaseCardModifier(removalEdge: removalEdge))
+  fileprivate func baseCard() -> some View {
+    modifier(BaseCardModifier())
   }
 
   func focusedCard() -> some View {
@@ -61,5 +64,9 @@ extension View {
 
   func card(index: Int, zIndex: Int) -> some View {
     modifier(CardModifier(index: index, zIndex: zIndex))
+  }
+
+  func cardAnimation(removalEdge: Edge) -> some View {
+    modifier(CardAnimationModifier(removalEdge: removalEdge))
   }
 }

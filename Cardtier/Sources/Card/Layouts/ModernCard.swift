@@ -50,8 +50,8 @@ private struct ModernCardFront: View {
       VStack {
         HStack {
           Spacer()
-          if let company = card.company, let role = card.role {
-            Text("\(company) | \(role)")
+          if let company = card.company, let title = card.title {
+            Text("\(company) | \(title)")
               .font(CardElements.customFont(name: card.style.fontName, size: 12))
               .foregroundColor(card.style.secondaryColor ?? .black)
               .padding(.top, 17)
@@ -93,8 +93,8 @@ private struct ModernCardFront: View {
 
           VStack(alignment: .leading, spacing: 4) {
             contactItem(
-              label: "Website:", value: card.contactInformation.websiteURL?.absoluteString)
-            contactItem(label: "LinkedIN:", value: card.contactInformation.linkedInURL?.host)
+              label: "Website:", value: card.contactInformation.websiteURL)
+            contactItem(label: "LinkedIN:", value: card.contactInformation.linkedInURL)
           }
         }
 

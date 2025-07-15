@@ -82,11 +82,11 @@ struct CardInfoSheet: View {
         )
 
         if let website = card.contactInformation.websiteURL {
-          contactItem(icon: "globe", text: website.absoluteString)
+          contactItem(icon: "globe", text: website)
         }
 
         if let linkedin = card.contactInformation.linkedInURL {
-          contactItem(icon: "link", text: linkedin.absoluteString)
+          contactItem(icon: "link", text: linkedin)
         }
       }
 

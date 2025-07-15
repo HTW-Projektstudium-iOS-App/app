@@ -13,18 +13,18 @@ extension Card {
     let faxNumber: String?
 
     /// Website URL
-    let websiteURL: URL?
+    let websiteURL: String?
 
     /// LinkedIn profile URL
-    let linkedInURL: URL?
+    let linkedInURL: String?
 
     /// Creates contact information with optional fields
     init(
       email: String? = nil,
       phoneNumber: String? = nil,
       faxNumber: String? = nil,
-      websiteURL: URL? = nil,
-      linkedInURL: URL? = nil
+      websiteURL: String? = nil,
+      linkedInURL: String? = nil
     ) {
       self.email = email
       self.phoneNumber = phoneNumber

@@ -42,8 +42,8 @@ struct MinimalCardFront: View {
           .font(CardElements.customFont(name: card.style.fontName, size: 18, weight: .medium))
           .foregroundColor(card.style.secondaryColor ?? .black)
 
-        if let role = card.role {
-          Text(role)
+        if let title = card.title {
+          Text(title)
             .font(CardElements.customFont(name: card.style.fontName, size: 16))
             .foregroundColor(card.style.secondaryColor ?? .black)
         }
@@ -120,7 +120,7 @@ struct MinimalCardBack: View {
 
             VStack(alignment: .leading, spacing: 5) {
               contactItem(
-                text: card.contactInformation.websiteURL?.absoluteString ?? "www.website.com")
+                text: card.contactInformation.websiteURL ?? "www.website.com")
               contactItem(text: card.contactInformation.email ?? "company@email.com")
               contactItem(text: card.contactInformation.phoneNumber ?? "1076-14734920")
             }

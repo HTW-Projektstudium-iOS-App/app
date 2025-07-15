@@ -5,6 +5,8 @@ struct CardStack: View {
   @State private var focusedCardID: UUID?
   private var focusedCard: Card? { cards.first(where: { $0.id == focusedCardID }) }
 
+  @State private var isFocusedCardFlipped = false
+
   @State private var scrollReader: ScrollViewProxy?
   @State private var scrollVelocity: CGFloat = 0
   @State private var scrollEndTimer: Timer?
@@ -42,15 +44,19 @@ struct CardStack: View {
                   CardView(
                     card: card,
                     focusedCardID: $focusedCardID,
+                    isFlipped: false,
                     isScrolling: isScrolling,
                     scrollVelocity: scrollVelocity
                   )
                   .card(index: index, zIndex: cards.count - index)
+                  .onTapGesture {
+                    withAnimation {
+                      focusedCardID = card.id
+                    }
+                  }
                 }
               }
             }
-            .padding(.top, 50)
-            .padding(.bottom, 220)
             .animation(.cardStack, value: focusedCardID)
           }
         }
@@ -64,10 +70,16 @@ struct CardStack: View {
         CardView(
           card: focusedCard,
           focusedCardID: $focusedCardID,
+          isFlipped: isFocusedCardFlipped,
           isScrolling: isScrolling,
           scrollVelocity: scrollVelocity
         )
         .focusedCard()
+        .onTapGesture {
+          withAnimation(.cardFlip) {
+            isFocusedCardFlipped.toggle()
+          }
+        }
         .animation(.cardStack, value: focusedCardID)
       }
     }
@@ -77,6 +89,8 @@ struct CardStack: View {
         withAnimation(.cardStack) {
           scrollReader?.scrollTo("stackAnchor", anchor: .top)
         }
+
+        isFocusedCardFlipped = false
       }
     }
   }
