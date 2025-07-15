@@ -21,7 +21,11 @@ struct ContentView: View {
         .resizable()
         .ignoresSafeArea()
 
-      NavigationStack {
+    NavigationStack {
+      ZStack {
+        Image(asset: CardtierImages(name: "Background Gradient"))
+          .resizable()
+          .ignoresSafeArea()
         VStack {
           // TODO: add proper onboarding screen
           if editingCard || userCard == nil {
