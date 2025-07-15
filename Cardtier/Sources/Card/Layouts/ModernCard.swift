@@ -4,14 +4,12 @@ struct ModernCard: View {
   let card: Card
   let side: CardSide
 
-  let showInfoAction: () -> Void
-
   var body: some View {
     switch side {
     case .front:
-      ModernCardFront(card: card, showInfoAction: showInfoAction)
+      ModernCardFront(card: card)
     case .back:
-      ModernCardBack(card: card, showInfoAction: showInfoAction)
+      ModernCardBack(card: card)
     }
   }
 }
@@ -20,7 +18,6 @@ struct ModernCard: View {
 /// Features name, title, and company with left-aligned layout
 private struct ModernCardFront: View {
   let card: Card
-  let showInfoAction: () -> Void
 
   var body: some View {
     ZStack {
@@ -115,16 +112,6 @@ private struct ModernCardFront: View {
         }
       }
       .padding(4)
-
-      // Info button in the absolute bottom right corner
-      VStack {
-        Spacer()
-        HStack {
-          Spacer()
-          CardElements.infoButton(card: card, action: showInfoAction)
-            .padding([.bottom, .trailing], 4)
-        }
-      }
     }
   }
 
@@ -149,7 +136,6 @@ private struct ModernCardFront: View {
 /// Features contact information, address, and slogan with left-aligned layout
 private struct ModernCardBack: View {
   let card: Card
-  let showInfoAction: () -> Void
 
   var body: some View {
     ZStack {
@@ -221,12 +207,6 @@ private struct ModernCardBack: View {
         .frame(maxWidth: .infinity, alignment: .center)
 
         Spacer()
-
-        // Info button
-        HStack {
-          Spacer()
-          CardElements.infoButton(card: card, action: showInfoAction)
-        }
       }
       .padding(4)
     }

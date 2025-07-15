@@ -4,21 +4,18 @@ struct TraditionalCard: View {
   let card: Card
   let side: CardSide
 
-  let showInfoAction: () -> Void
-
   var body: some View {
     switch side {
     case .front:
-      TraditionalCardFront(card: card, showInfoAction: showInfoAction)
+      TraditionalCardFront(card: card)
     case .back:
-      TraditionalCardBack(card: card, showInfoAction: showInfoAction)
+      TraditionalCardBack(card: card)
     }
   }
 }
 
 struct TraditionalCardFront: View {
   let card: Card
-  let showInfoAction: () -> Void
 
   var body: some View {
     ZStack {
@@ -66,23 +63,12 @@ struct TraditionalCardFront: View {
           .padding(.bottom, 0)
       }
       .padding(16)
-
-      // Info button (bottom right)
-      VStack {
-        Spacer()
-        HStack {
-          Spacer()
-          CardElements.infoButton(card: card, action: showInfoAction)
-        }
-      }
-      .padding(16)
     }
   }
 }
 
 struct TraditionalCardBack: View {
   let card: Card
-  let showInfoAction: () -> Void
 
   var body: some View {
     ZStack {
@@ -167,18 +153,6 @@ struct TraditionalCardBack: View {
         .frame(maxWidth: .infinity, alignment: .trailing)
         .padding([.bottom, .horizontal], 16)
       }
-
-      // Info button (bottom left)
-      VStack {
-        Spacer()
-        HStack {
-          CardElements.infoButton(card: card, action: showInfoAction)
-            .padding(.leading, 16)
-
-          Spacer()
-        }
-      }
-      .padding(.bottom, 16)
     }
   }
 }

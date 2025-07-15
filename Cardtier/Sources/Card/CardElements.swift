@@ -11,22 +11,6 @@ struct CardElements {
     case square
   }
 
-  /// Creates a standardized info button with consistent styling
-  /// - Parameters:
-  ///   - card: Card data for styling information
-  ///   - action: Closure executed when button is tapped
-  /// - Returns: Configured Button view with info icon
-  static func infoButton(card: Card, action: @escaping () -> Void) -> some View {
-    Button(action: action) {
-      Image(systemName: "info.circle")
-        .font(.title2)
-        .foregroundColor(
-          card.style.secondaryColor ?? .black
-        )
-    }
-    .buttonStyle(PlainButtonStyle())
-  }
-
   // MARK: - Logo Factory
 
   /// Creates a layered logo with shadows, highlights, and flexible content
@@ -45,11 +29,11 @@ struct CardElements {
       Group {
         switch shape {
         case .oval:
-          Ellipse().fill(Color.black.opacity(0.25))
+          Ellipse().fill(Color.black.opacity(0.1))
         case .circle:
-          Circle().fill(Color.black.opacity(0.25))
+          Circle().fill(Color.black.opacity(0.1))
         case .square:
-          Rectangle().fill(Color.black.opacity(0.25))
+          Rectangle().fill(Color.black.opacity(0.1))
         }
       }
       .frame(width: width, height: height)

@@ -1,11 +1,14 @@
 import SwiftUI
 
 struct CardStack: View {
+  @Namespace private var namespace
+
   @State private var cards: [Card] = Card.sampleCards
   @State private var focusedCardID: UUID?
   private var focusedCard: Card? { cards.first(where: { $0.id == focusedCardID }) }
 
   @State private var isFocusedCardFlipped = false
+  @State private var isShowingInfo: Bool = false
 
   @State private var scrollReader: ScrollViewProxy?
   @State private var scrollVelocity: CGFloat = 0
@@ -28,37 +31,41 @@ struct CardStack: View {
             // When tapped outside cards, deselects the currently focused card
             Color.clear
               .contentShape(Rectangle())
+              .zIndex(focusedCardID != nil ? 1000 : -1)
               .onTapGesture {
                 if focusedCardID != nil {
                   withAnimation(.cardStack) {
                     focusedCardID = nil
+                  } completion: {
+                    isFocusedCardFlipped = false
                   }
                 }
               }
 
             VStack(spacing: 0) {
-              ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
-                if card.id != focusedCardID {
-                  CardView(
-                    card: card,
-                    focusedCardID: $focusedCardID,
-                    isFlipped: false,
-                    isScrolling: isScrolling,
-                    scrollVelocity: scrollVelocity
-                  )
-                  .card(index: index, zIndex: cards.count - index)
-                  .cardAnimation(removalEdge: .top)
-                  .offset(y: cardOffset * CGFloat(index))
-                  .onTapGesture {
-                    withAnimation {
-                      focusedCardID = card.id
-                    }
+              ForEach(Array(cards.filter { $0.id != focusedCardID }.enumerated()), id: \.element.id)
+              { index, card in
+                CardView(
+                  card: card,
+                  focusedCardID: $focusedCardID,
+                  isFlipped: false,
+                  isScrolling: isScrolling,
+                  scrollVelocity: scrollVelocity
+                )
+                .card(index: index, zIndex: cards.count - index)
+                .padding(.horizontal)
+                .matchedGeometryEffect(id: card.id, in: namespace)
+                .zIndex(card.id == focusedCardID ? 2000 : -1)
+                .offset(y: cardOffset * CGFloat(index))
+                .onTapGesture {
+                  withAnimation {
+                    focusedCardID = card.id
                   }
                 }
               }
             }
             .animation(.cardStack, value: focusedCardID)
-            .padding(.top, focusedCardID != nil ? 250 : 0)
+            // .padding(.top, focusedCardID != nil ? 150 : 0)
           }
           .onGeometryChange(
             for: CGFloat.self,
@@ -76,31 +83,42 @@ struct CardStack: View {
       }
 
       if let focusedCard {
-        CardView(
-          card: focusedCard,
-          focusedCardID: $focusedCardID,
-          isFlipped: isFocusedCardFlipped,
-          isScrolling: isScrolling,
-          scrollVelocity: scrollVelocity
-        )
-        .focusedCard()
-        .cardAnimation(removalEdge: .top)
-        .onTapGesture {
-          withAnimation(.cardFlip) {
-            isFocusedCardFlipped.toggle()
-          }
-        }
-        .animation(.cardStack, value: focusedCardID)
-      }
-    }
-    .background(Color.clear)
-    .onChange(of: focusedCardID) { _, newValue in
-      if newValue != nil {
-        withAnimation(.cardStack) {
-          scrollReader?.scrollTo("stackAnchor", anchor: .top)
-        }
+        VStack(spacing: 32) {
+          Spacer()
 
-        isFocusedCardFlipped = false
+          CardView(
+            card: focusedCard,
+            focusedCardID: $focusedCardID,
+            isFlipped: isFocusedCardFlipped,
+            isScrolling: isScrolling,
+            scrollVelocity: scrollVelocity
+          )
+          .focusedCard()
+          .matchedGeometryEffect(id: focusedCard.id, in: namespace)
+          .onTapGesture {
+            withAnimation(.cardFlip) {
+              isFocusedCardFlipped.toggle()
+            }
+          }
+          .animation(.cardStack, value: focusedCardID)
+
+          Button(action: {
+            withAnimation {
+              isShowingInfo = true
+            }
+          }) {
+            Text("\(Image(systemName: "info.circle")) More Information")
+              .padding(.horizontal)
+              .padding(.vertical)
+          }
+          .buttonStyle(.glass)
+
+          Spacer()
+        }
+        .padding()
+        .sheet(isPresented: $isShowingInfo) {
+          CardInfoSheet(card: focusedCard, isPresented: $isShowingInfo)
+        }
       }
     }
   }
@@ -141,6 +159,8 @@ struct CardStack: View {
       isDragging = true
       withAnimation(.cardStack) {
         focusedCardID = nil
+      } completion: {
+        isFocusedCardFlipped = false
       }
     }
 

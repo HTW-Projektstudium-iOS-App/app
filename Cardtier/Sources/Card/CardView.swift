@@ -8,8 +8,6 @@ enum CardSide { case front, back }
 struct CardView: View {
   let card: Card
 
-  @State private var isShowingInfo: Bool = false
-
   @Binding var focusedCardID: UUID?
   private var isFocused: Bool { focusedCardID == card.id }
   private var isAnyCardFocused: Bool { focusedCardID != nil }
@@ -31,27 +29,26 @@ struct CardView: View {
       .overlay {
         switch card.style.designStyle {
         case .modern where isFlipped:
-          ModernCard(card: card, side: .back, showInfoAction: { isShowingInfo = true })
+          ModernCard(card: card, side: .back)
             .scaleEffect(x: -1, y: 1, anchor: .center)
         case .modern:
-          ModernCard(card: card, side: .front, showInfoAction: { isShowingInfo = true })
+          ModernCard(card: card, side: .front)
         case .minimal where isFlipped:
-          MinimalCard(card: card, side: .back, showInfoAction: { isShowingInfo = true })
+          MinimalCard(card: card, side: .back)
             .scaleEffect(x: -1, y: 1, anchor: .center)
         case .minimal:
-          MinimalCard(card: card, side: .front, showInfoAction: { isShowingInfo = true })
+          MinimalCard(card: card, side: .front)
         case .traditional where isFlipped:
-          TraditionalCard(card: card, side: .back, showInfoAction: { isShowingInfo = true })
+          TraditionalCard(card: card, side: .back)
             .scaleEffect(x: -1, y: 1, anchor: .center)
         case .traditional:
-          TraditionalCard(card: card, side: .front, showInfoAction: { isShowingInfo = true })
+          TraditionalCard(card: card, side: .front)
         }
       }
       .overlay(
         Rectangle()
           .stroke(Color.black.opacity(0.15), lineWidth: 0.7)
       )
-      .offset(y: (isAnyCardFocused && !isFocused) ? 30 : 0)
       .modifier(
         ScrollingAnimation(
           isScrolling: isScrolling,
@@ -66,11 +63,8 @@ struct CardView: View {
         perspective: 0.5
       )
       .scaleEffect(isFocused ? 1.05 : 1.0)
-      .blur(radius: isAnyCardFocused && !isFocused ? 1.5 : 0)
-      .brightness(isAnyCardFocused ? (isFocused ? 0.03 : -0.05) : 0)
+      .blur(radius: isAnyCardFocused && !isFocused ? 5 : 0)
+      .brightness(isAnyCardFocused ? (isFocused ? 0.03 : -0.1) : 0)
       .offset(y: stackCollapseOffset)
-      .sheet(isPresented: $isShowingInfo) {
-        CardInfoSheet(card: card, isPresented: $isShowingInfo)
-      }
   }
 }

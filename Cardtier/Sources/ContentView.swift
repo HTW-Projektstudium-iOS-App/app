@@ -117,7 +117,6 @@ struct ContentView: View {
               )
               // .animation(.spring(response: 0.5, dampingFraction: 0.8), value: isStackExpanded)
               .transition(.move(edge: .bottom))
-              .padding(.horizontal)
             }
           }
         }

@@ -4,14 +4,12 @@ struct MinimalCard: View {
   let card: Card
   let side: CardSide
 
-  let showInfoAction: () -> Void
-
   var body: some View {
     switch side {
     case .front:
-      MinimalCardFront(card: card, showInfoAction: showInfoAction)
+      MinimalCardFront(card: card)
     case .back:
-      MinimalCardBack(card: card, showInfoAction: showInfoAction)
+      MinimalCardBack(card: card)
     }
   }
 }
@@ -20,7 +18,6 @@ struct MinimalCard: View {
 /// Simplified, centered layout with just name and title
 struct MinimalCardFront: View {
   let card: Card
-  let showInfoAction: () -> Void
 
   var body: some View {
     ZStack {
@@ -49,15 +46,6 @@ struct MinimalCardFront: View {
         }
       }
       .padding(0)
-
-      VStack {
-        Spacer()
-        HStack {
-          Spacer()
-          CardElements.infoButton(card: card, action: showInfoAction)
-            .padding([.bottom, .trailing], 4)
-        }
-      }
     }
     .frame(maxHeight: .infinity)
     .clipShape(Rectangle())
@@ -79,7 +67,6 @@ struct MinimalCardFront: View {
 
 struct MinimalCardBack: View {
   let card: Card
-  let showInfoAction: () -> Void
 
   var body: some View {
     ZStack {
@@ -127,15 +114,6 @@ struct MinimalCardBack: View {
           }
           .padding(.horizontal, 16)
           .padding(.bottom, 20)
-        }
-      }
-
-      VStack {
-        Spacer()
-        HStack {
-          Spacer()
-          CardElements.infoButton(card: card, action: showInfoAction)
-            .padding([.bottom, .trailing], 4)
         }
       }
     }

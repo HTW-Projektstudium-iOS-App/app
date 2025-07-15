@@ -11,8 +11,7 @@ struct FocusedCardModifier: ViewModifier {
   func body(content: Content) -> some View {
     content
       .baseCard()
-      .zIndex(1000)
-      .padding(.top, 40)
+      .zIndex(2000)
       .shadow(radius: 10, x: 0, y: 3)
       .rotation3DEffect(
         .degrees(1),
