@@ -4,7 +4,6 @@ enum CardSide { case front, back }
 
 /// Displays a single business card that can be flipped and shows metadata
 /// This view handles the main card presentation, animations, and interactions
-/// TODO: add very slight corner radius
 struct CardView: View {
   let card: Card
 
@@ -25,6 +24,7 @@ struct CardView: View {
   var body: some View {
     Rectangle()
       .fill(card.style.primaryColor)
+      .clipShape(RoundedRectangle(cornerRadius: 5))
       .shadow(radius: isFocused ? 8 : 4, x: 0, y: isFocused ? 4 : 2)
       .overlay {
         switch card.style.designStyle {
@@ -46,8 +46,8 @@ struct CardView: View {
         }
       }
       .overlay(
-        Rectangle()
-          .stroke(Color.black.opacity(0.15), lineWidth: 0.7)
+        RoundedRectangle(cornerRadius: 5)
+          .stroke((card.style.secondaryColor ?? .black).opacity(0.2), lineWidth: 0.7)
       )
       .modifier(
         ScrollingAnimation(

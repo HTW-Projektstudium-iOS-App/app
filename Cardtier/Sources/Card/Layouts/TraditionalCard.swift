@@ -19,10 +19,6 @@ struct TraditionalCardFront: View {
 
   var body: some View {
     ZStack {
-      // Main colored background
-      Rectangle()
-        .fill(card.style.primaryColor)
-
       VStack {
         // Top right: company, role, logo
         HStack(alignment: .top) {
@@ -72,10 +68,6 @@ struct TraditionalCardBack: View {
 
   var body: some View {
     ZStack {
-      // Faded background
-      Rectangle()
-        .fill(card.style.primaryColor.opacity(0.15))
-
       VStack {
         // Website URL at top right
         HStack {

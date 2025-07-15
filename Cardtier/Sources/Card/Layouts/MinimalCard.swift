@@ -21,13 +21,6 @@ struct MinimalCardFront: View {
 
   var body: some View {
     ZStack {
-      Rectangle()
-        .fill(card.style.primaryColor)
-        .overlay(
-          Rectangle()
-            .stroke((card.style.secondaryColor ?? Color.black).opacity(0.2), lineWidth: 0.5)
-        )
-
       Text(getMonogramInitials())
         .font(.custom("Zapfino", size: 60).weight(.thin))
         .foregroundColor(Color.gray.opacity(0.25))
@@ -70,12 +63,6 @@ struct MinimalCardBack: View {
 
   var body: some View {
     ZStack {
-      Rectangle()
-        .fill(card.style.primaryColor)
-        .overlay {
-          Rectangle()
-            .stroke((card.style.secondaryColor ?? Color.black).opacity(0.2), lineWidth: 0.5)
-        }
 
       VStack {
         if let company = card.company {

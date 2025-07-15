@@ -21,10 +21,6 @@ private struct ModernCardFront: View {
 
   var body: some View {
     ZStack {
-      // Background
-      Rectangle()
-        .fill(card.style.primaryColor)
-
       // Logo in the absolute top left corner
       VStack {
         HStack {
@@ -139,8 +135,6 @@ private struct ModernCardBack: View {
 
   var body: some View {
     ZStack {
-      Rectangle().fill(card.style.primaryColor)
-
       VStack {
         Spacer()
 
