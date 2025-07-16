@@ -24,6 +24,10 @@ struct EditView: View {
 
         if cardModel == nil {
           modelContext.insert(cardData.createCard())
+
+          Card.sampleCards.forEach { card in
+            modelContext.insert(card)
+          }
         } else {
           cardData.apply(to: cardModel!)
         }
