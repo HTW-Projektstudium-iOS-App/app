@@ -4,7 +4,7 @@ import SwiftUI
 struct ContentView: View {
   @Namespace private var namespace
 
-  @EnvironmentObject var multipeerManager: MultipeerManager
+  @EnvironmentObject var cardExchange: CardExchangeService
 
   @Query(filter: #Predicate<Card> { $0.isUserCard == true })
   private var _userCard: [Card]

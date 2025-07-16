@@ -2,12 +2,12 @@ import SwiftUI
 
 @main
 struct CardtierApp: App {
-  @StateObject private var multipeerManager = MultipeerManager()
+  @StateObject private var cardExchangeService = CardExchangeService()
 
   var body: some Scene {
     WindowGroup {
       ContentView()
-        .environmentObject(multipeerManager)
+        .environmentObject(cardExchangeService)
     }
     .modelContainer(for: Card.self)
   }

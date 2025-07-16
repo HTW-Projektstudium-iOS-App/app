@@ -4,7 +4,7 @@ import MultipeerConnectivity
 import NearbyInteraction
 import os
 
-class MultipeerManager: NSObject, ObservableObject {
+class CardExchangeService: NSObject, ObservableObject {
   private let serviceType = "htw-cardtier"
   private let localPeerID = MCPeerID.loadCurrent()
 
@@ -17,7 +17,8 @@ class MultipeerManager: NSObject, ObservableObject {
   private var niSession: NISession!
   private var peerDiscoveryTokens: [MCPeerID: NIDiscoveryToken] = [:]
 
-  @Published var distances: [MCPeerID: Float] = [:]
+  @Published private var distances: [MCPeerID: Float] = [:]
+  @Published var closestPeer: (peer: MCPeerID, distance: Float)?
 
   // TODO: does this make sense?
   private var hasSentPeerID = false
@@ -49,6 +50,9 @@ class MultipeerManager: NSObject, ObservableObject {
 
     $distances
       .compactMap { $0.min(by: { $0.value < $1.value }) }
+      .handleEvents(receiveOutput: { [weak self] in
+        self?.closestPeer = (peer: $0.key, distance: $0.value)
+      })
       .debounce(for: .seconds(2), scheduler: RunLoop.main)
       .sink { [weak self] in
         guard self?.hasSentPeerID == true else { return }
@@ -67,29 +71,11 @@ class MultipeerManager: NSObject, ObservableObject {
       print("Peer-ID an nächsten Peer gesendet: \(peer.displayName)")
     }
   }
-
-  private func sendDiscoveryToken(to peer: MCPeerID) {
-    guard let token = niSession.discoveryToken else { return }
-
-    do {
-      let data = try NSKeyedArchiver.archivedData(
-        withRootObject: token,
-        requiringSecureCoding: true
-      )
-
-      try session.send(data, toPeers: [peer], with: .reliable)
-    } catch {
-      print("Fehler beim Senden des DiscoveryTokens: \(error)")
-    }
-  }
-
-  private func setupNearbyInteraction(with token: NIDiscoveryToken) {
-    let config = NINearbyPeerConfiguration(peerToken: token)
-    niSession.run(config)
-  }
 }
 
-extension MultipeerManager: MCSessionDelegate {
+// MARK: - Multipeer Connectivity
+
+extension CardExchangeService: MCSessionDelegate {
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
     if state == .connected {
       self.sendDiscoveryToken(to: peerID)
@@ -118,7 +104,7 @@ extension MultipeerManager: MCSessionDelegate {
 }
 
 // Immediately connect all available peers with each other
-extension MultipeerManager: MCNearbyServiceBrowserDelegate, MCNearbyServiceAdvertiserDelegate {
+extension CardExchangeService: MCNearbyServiceBrowserDelegate, MCNearbyServiceAdvertiserDelegate {
   func advertiser(
     _ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID,
     withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void
@@ -134,7 +120,9 @@ extension MultipeerManager: MCNearbyServiceBrowserDelegate, MCNearbyServiceAdver
   func browser(_: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {}
 }
 
-extension MultipeerManager: NISessionDelegate {
+// MARK: - Nearby Interaction
+
+extension CardExchangeService: NISessionDelegate {
   func session(_ session: NISession, didUpdate nearbyObjects: [NINearbyObject]) {
     for object in nearbyObjects {
       let token = object.discoveryToken
@@ -164,5 +152,25 @@ extension MultipeerManager: NISessionDelegate {
         setupNearbyInteraction(with: token)
       }
     }
+  }
+
+  private func sendDiscoveryToken(to peer: MCPeerID) {
+    guard let token = niSession.discoveryToken else { return }
+
+    do {
+      let data = try NSKeyedArchiver.archivedData(
+        withRootObject: token,
+        requiringSecureCoding: true
+      )
+
+      try session.send(data, toPeers: [peer], with: .reliable)
+    } catch {
+      print("Fehler beim Senden des DiscoveryTokens: \(error)")
+    }
+  }
+
+  private func setupNearbyInteraction(with token: NIDiscoveryToken) {
+    let config = NINearbyPeerConfiguration(peerToken: token)
+    niSession.run(config)
   }
 }
