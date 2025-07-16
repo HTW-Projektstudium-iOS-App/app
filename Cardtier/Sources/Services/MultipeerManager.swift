@@ -13,8 +13,6 @@ class MultipeerManager: NSObject, ObservableObject {
   private var browser: MCNearbyServiceBrowser!
 
   private var niSession: NISession!
-  private var peerDiscoveryToken: NIDiscoveryToken?
-
   private var peerDiscoveryTokens: [MCPeerID: NIDiscoveryToken] = [:]
   private var distances: [MCPeerID: Float] = [:]
 
@@ -148,18 +146,22 @@ extension MultipeerManager: NISessionDelegate {
     }
 
     func session(_ session: NISession, didInvalidateWith error: Error) {
-      print("NI Session invalidiert: \(error.localizedDescription)")
+      print("NISession invalidated: \(error.localizedDescription)")
+
+      peerDiscoveryTokens.removeAll()
+      DispatchQueue.main.async { self.distances.removeAll() }
     }
 
     func sessionWasSuspended(_ session: NISession) {
-      print("NI Session wurde pausiert.")
+      print("NISession was suspended")
     }
 
     func sessionSuspensionEnded(_ session: NISession) {
-      if let token = peerDiscoveryToken {
+      print("NISession suspension ended")
+
+      for token in peerDiscoveryTokens.values {
         setupNearbyInteraction(with: token)
       }
     }
   }
-
 }
