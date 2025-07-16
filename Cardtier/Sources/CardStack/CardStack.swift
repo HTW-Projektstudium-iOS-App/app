@@ -111,7 +111,7 @@ struct CardStack: View {
               .padding(.horizontal)
               .padding(.vertical)
           }
-          .buttonStyle(.borderedProminent)
+          .buttonStyle(.glass)
 
           Spacer()
         }
