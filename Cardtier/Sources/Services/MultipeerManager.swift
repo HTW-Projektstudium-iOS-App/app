@@ -41,55 +41,25 @@ class MultipeerManager: NSObject, ObservableObject {
     niSession = NISession()
     niSession.delegate = self
 
-    Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] _ in
-      guard let self = self else { return }
+    $distances
+      .compactMap { $0.min(by: { $0.value < $1.value }) }
+      .debounce(for: .seconds(2), scheduler: RunLoop.main)
+      .sink { [weak self] in
+        guard self?.hasSentPeerID == true else { return }
+        self?.hasSentPeerID = true
 
-      if let nearestDistance = self.distances.min(by: { $0.value < $1.value })?.value {
-        if nearestDistance < 0.05 {
-          if !self.isInTargetRange {
-            self.isInTargetRange = true
-            self.startStableTimer()
-          }
-        } else {
-          self.isInTargetRange = false
-          self.cancelStableTimer()
-        }
-      } else {
-        self.isInTargetRange = false
-        self.cancelStableTimer()
+        self?.sendData(to: $0.key)
       }
+      .store(in: &cancellables)
+  }
+
+  func sendData(to peer: MCPeerID) {
+    let name = localPeerID.displayName
+    if let data = name.data(using: .utf8) {
+      try? session.send(data, toPeers: [peer], with: .reliable)
+
+      print("Peer-ID an nächsten Peer gesendet: \(peer.displayName)")
     }
-  }
-
-  private func triggerAction() {
-    guard !hasSentPeerID else { return }
-    hasSentPeerID = true
-
-    print("Abstand 2 Sekunden im Zielbereich → Peer-ID wird gesendet")
-    sendOwnPeerID()
-  }
-
-  func sendOwnPeerID() {
-    guard !distances.isEmpty else { return }
-    if let nearest = distances.min(by: { $0.value < $1.value })?.key {
-      let name = myPeerID.displayName
-      if let data = name.data(using: .utf8) {
-        try? session.send(data, toPeers: [nearest], with: .reliable)
-        print("Peer-ID an nächsten Peer gesendet: \(nearest.displayName)")
-      }
-    }
-  }
-
-  private func startStableTimer() {
-    stableTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
-      guard let self = self, self.isInTargetRange else { return }
-      self.triggerAction()
-    }
-  }
-
-  private func cancelStableTimer() {
-    stableTimer?.invalidate()
-    stableTimer = nil
   }
 
   private func sendDiscoveryToken() {
