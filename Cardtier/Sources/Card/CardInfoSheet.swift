@@ -6,6 +6,9 @@ import SwiftUI
 struct CardInfoSheet: View {
   let card: Card
   @Binding var isPresented: Bool
+  @State private var showAddSuccess = false
+  @State private var showAddError   = false
+  @State private var addErrorMsg    = ""
 
   var body: some View {
     ScrollView {
@@ -32,7 +35,11 @@ struct CardInfoSheet: View {
     .background(Color(.systemBackground))
     // Add close button at the bottom, respecting safe area
     .safeAreaInset(edge: .bottom) {
-      closeButton
+      VStack(spacing: 8) {
+          addToContactsButton
+          closeButton
+      }
+      .background(.ultraThinMaterial)
     }
   }
 
@@ -186,7 +193,41 @@ struct CardInfoSheet: View {
       .background(card.style.secondaryColor?.opacity(0.5) ?? Color.gray.opacity(0.5))
       .padding(.vertical, 4)
   }
-
+    
+  /// add to contact button
+  private var addToContactsButton: some View {
+    Button(action: {
+        ContactManager.save(card: card) { result in
+            switch result {
+            case .success:
+                showAddSuccess = true
+            case .failure(let err):
+                addErrorMsg = err.localizedDescription
+                showAddError = true
+            }
+          }
+        }) {
+                Text("Add to Contacts")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(card.style.secondaryColor ?? .accentColor)
+            .padding(.horizontal)
+            .alert("Contact Added", isPresented: $showAddSuccess) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("This card has been saved to your Contacts.")
+     
+            }
+            .alert("Error", isPresented: $showAddError) {
+                Button("OK", role: .cancel) { }
+      } message: {
+          Text(addErrorMsg)
+      }
+  }
+    
   /// Close button at the bottom of the sheet
   private var closeButton: some View {
     Button(action: { isPresented = false }) {
