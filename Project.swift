@@ -21,7 +21,7 @@ let project = Project(
 
           "NSLocalNetworkUsageDescription":
             "Wird benötigt, um mit anderen Geräten in der Nähe zu interagieren.",
-          "NSBonjourServices": ["_nbi-demo._tcp.", "_nbi-demo._udp."],
+          "NSBonjourServices": ["_htw-cardtier._tcp.", "_htw-cardtier._udp."],
         ]
       ),
       sources: ["Cardtier/Sources/**"],
