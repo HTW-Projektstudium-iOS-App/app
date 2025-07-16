@@ -16,15 +16,8 @@ struct ContentView: View {
   @State private var editingCard = false
 
   @State private var dragOffset: CGFloat = 0
-  @State private var isDragging: Bool = false
   @State private var isStackExpanded: Bool = false
-  @State private var lastScrollOffset: CGFloat = 0
-  @State private var scrollVelocity: CGFloat = 0
-  @State private var lastScrollTime: Date = Date()
-
   @State private var stackScrollOffset: CGFloat = 0
-
-  @State private var scrollOffset: CGFloat = 0
 
   var body: some View {
     GeometryReader { geometry in
@@ -92,10 +85,6 @@ struct ContentView: View {
               .gesture(
                 DragGesture()
                   .onChanged { value in
-                    if !isDragging {
-                      isDragging = true
-                    }
-
                     if !isStackExpanded {
                       dragOffset = min(0, value.translation.height) * 0.3
                     }
@@ -110,7 +99,6 @@ struct ContentView: View {
                       withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
                         isStackExpanded = shouldExpand
                         dragOffset = 0
-                        isDragging = false
                       }
                     }
                   }
