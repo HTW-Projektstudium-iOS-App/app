@@ -208,9 +208,9 @@ struct CardInfoSheet: View {
           }
         }) {
                 Text("Add to Contacts")
-                    .font(.headline)
+                    .font(CardElements.customFont(name: card.style.fontName, size: 16, weight: .medium))
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, 8)
             }
             .buttonStyle(.borderedProminent)
             .tint(card.style.secondaryColor ?? .accentColor)
