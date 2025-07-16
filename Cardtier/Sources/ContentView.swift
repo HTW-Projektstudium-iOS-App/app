@@ -22,6 +22,7 @@ struct ContentView: View {
   @State private var isStackExpanded: Bool = false
   @State private var stackScrollOffset: CGFloat = 0
 
+  var isInProximity: Bool { cardExchange.closestPeer?.distance ?? 1 < 0.06 }
   @State private var isTransmitting = false
   @State private var showTransmissionControls = false
   @GestureState private var cardTransmissionDragOffset: CGSize = .zero
@@ -30,6 +31,7 @@ struct ContentView: View {
   private func receiveCard(card: Card) {
     print("Received card: \(card.id)")
 
+    guard !collectedCards.contains(where: { $0.id == card.id }) else { return }
     modelContext.insert(card)
   }
 
@@ -83,6 +85,10 @@ struct ContentView: View {
                   .offset(y: showTransmissionControls ? -30 : 40)
                   .opacity(showTransmissionControls ? 1 : 0)
                   .frame(height: 0)
+                  .offset(
+                    y: isTransmitting
+                      ? cardTransmissionDragOffset.height + cardTransmissionOffset.height : 0
+                  )
 
                 CardView(
                   card: userCard,
@@ -143,6 +149,17 @@ struct ContentView: View {
                   y: isTransmitting
                     ? cardTransmissionDragOffset.height + cardTransmissionOffset.height : 0
                 )
+                .onChange(debounced: .seconds(2), of: isInProximity) { _, newValue in
+                  if newValue {
+                    withAnimation(.spring(response: 0.8, dampingFraction: 0.5)) {
+                      isTransmitting = true
+                    } completion: {
+                      withAnimation(.spring(response: 0.6, dampingFraction: 0.5)) {
+                        showTransmissionControls = true
+                      }
+                    }
+                  }
+                }
 
                 Text("Swipe up to send card")
                   .foregroundStyle(.secondary)
@@ -159,7 +176,7 @@ struct ContentView: View {
                     "\(cardExchange.closestPeer?.peer.displayName ?? "No peer") - \(cardExchange.closestPeer?.distance ?? 0)"
                   )
 
-                  CardStack(cardOffset: !isStackExpanded ? -150 : 20) {
+                  CardStack(cards: collectedCards, cardOffset: !isStackExpanded ? -150 : 20) {
                     stackScrollOffset = $0
                   }
                   .scrollDisabled(!isStackExpanded)
@@ -206,7 +223,6 @@ struct ContentView: View {
                       }
                     }
                 )
-                // .animation(.spring(response: 0.5, dampingFraction: 0.8), value: isStackExpanded)
                 .transition(.move(edge: .bottom))
               }
             }
