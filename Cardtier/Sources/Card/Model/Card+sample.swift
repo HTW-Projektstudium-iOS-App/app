@@ -117,7 +117,7 @@ extension Card {
         secondaryColor: Color(red: 0.3, green: 0.2, blue: 0.3),  // dark plum
         fontName: "Times New Roman", designStyle: .traditional
       ),
-      collectionDate: Date(),
+      collectionDate: Date().addingTimeInterval(-60 * 60 * 24 * 7),
       collectionLocation: CLLocationCoordinate2D(latitude: 53.5511, longitude: 9.9937)
     ),
     Card(

@@ -13,8 +13,10 @@ struct ContentView: View {
     _userCard.first
   }
 
-  @Query(filter: #Predicate<Card> { $0.isUserCard == false })
-  private var collectedCards: [Card]
+  @Query(
+    filter: #Predicate<Card> { $0.isUserCard == false },
+    sort: \.collectionDate,
+    order: .reverse) private var collectedCards: [Card]
 
   @State private var editingCard = false
 
