@@ -172,10 +172,6 @@ struct ContentView: View {
 
               if !isTransmitting {
                 VStack(spacing: 0) {
-                  Text(
-                    "\(cardExchange.closestPeer?.peer.displayName ?? "No peer") - \(cardExchange.closestPeer?.distance ?? 0)"
-                  )
-
                   CardStack(cards: collectedCards, cardOffset: !isStackExpanded ? -150 : 20) {
                     stackScrollOffset = $0
                   }
