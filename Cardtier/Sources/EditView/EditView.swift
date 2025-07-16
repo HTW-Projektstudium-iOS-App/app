@@ -78,7 +78,6 @@ struct EditView: View {
       ScrollView {
         ScrollView(.horizontal, showsIndicators: false) {
           HStack(spacing: 10) {
-            // TODO: hide info button when editing
             CardView(
               card: cardData.createCard(), focusedCardID: .constant(nil), isFlipped: false,
               isScrolling: false,

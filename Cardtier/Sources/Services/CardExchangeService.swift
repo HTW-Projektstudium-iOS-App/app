@@ -23,7 +23,7 @@ class CardExchangeService: NSObject, ObservableObject {
   @Published private var distances: [MCPeerID: Float] = [:]
   @Published var closestPeer: (peer: MCPeerID, distance: Float)?
 
-  let onCardReceived: ((Card) -> Void)? = nil
+  var onCardReceived: ((Card) -> Void)?
 
   override init() {
     super.init()
