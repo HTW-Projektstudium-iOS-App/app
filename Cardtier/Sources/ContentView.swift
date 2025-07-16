@@ -200,6 +200,7 @@ struct ContentView: View {
                   y: isStackExpanded
                     ? 0 : geometry.size.height * 0.5 + dragOffset + -stackScrollOffset
                 )
+                .zIndex(200)
                 .gesture(
                   DragGesture()
                     .onChanged { value in
