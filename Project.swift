@@ -17,10 +17,6 @@ let project = Project(
       deploymentTargets: .iOS("18.0"),
       infoPlist: .extendingDefault(
         with: [
-          "UILaunchScreen": [
-            "UIColorName": "",
-            "UIImageName": "",
-          ],
           "UILaunchStoryboardName": "LaunchScreen",
         ]
       ),
