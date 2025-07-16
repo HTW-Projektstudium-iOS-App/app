@@ -5,8 +5,10 @@ import NearbyInteraction
 import os
 
 class MultipeerManager: NSObject, ObservableObject {
-  private let serviceType = "nbi-demo"
-  public let myPeerID = MCPeerID(displayName: "Benutzer-\(UUID().uuidString.prefix(5))")
+  private let serviceType = "htw-cardtier"
+  private let localPeerID = MCPeerID.loadCurrent()
+
+  private var cancellables = Set<AnyCancellable>()
 
   private var session: MCSession!
   private var advertiser: MCNearbyServiceAdvertiser!
@@ -14,25 +16,31 @@ class MultipeerManager: NSObject, ObservableObject {
 
   private var niSession: NISession!
   private var peerDiscoveryTokens: [MCPeerID: NIDiscoveryToken] = [:]
-  private var distances: [MCPeerID: Float] = [:]
 
-  private var stableTimer: Timer?
-  private var isInTargetRange = false
+  @Published var distances: [MCPeerID: Float] = [:]
+
+  // TODO: does this make sense?
   private var hasSentPeerID = false
-  private var cancellables = Set<AnyCancellable>()
 
   override init() {
     super.init()
 
-    session = MCSession(peer: myPeerID, securityIdentity: nil, encryptionPreference: .required)
+    session = MCSession(
+      peer: localPeerID,
+      securityIdentity: nil,
+      encryptionPreference: .required)
     session.delegate = self
 
     advertiser = MCNearbyServiceAdvertiser(
-      peer: myPeerID, discoveryInfo: nil, serviceType: serviceType)
+      peer: localPeerID,
+      discoveryInfo: nil,
+      serviceType: serviceType)
     advertiser.delegate = self
     advertiser.startAdvertisingPeer()
 
-    browser = MCNearbyServiceBrowser(peer: myPeerID, serviceType: serviceType)
+    browser = MCNearbyServiceBrowser(
+      peer: localPeerID,
+      serviceType: serviceType)
     browser.delegate = self
     browser.startBrowsingForPeers()
 
@@ -60,12 +68,16 @@ class MultipeerManager: NSObject, ObservableObject {
     }
   }
 
-  private func sendDiscoveryToken() {
+  private func sendDiscoveryToken(to peer: MCPeerID) {
     guard let token = niSession.discoveryToken else { return }
+
     do {
       let data = try NSKeyedArchiver.archivedData(
-        withRootObject: token, requiringSecureCoding: true)
-      try session.send(data, toPeers: session.connectedPeers, with: .reliable)
+        withRootObject: token,
+        requiringSecureCoding: true
+      )
+
+      try session.send(data, toPeers: [peer], with: .reliable)
     } catch {
       print("Fehler beim Senden des DiscoveryTokens: \(error)")
     }
@@ -75,26 +87,20 @@ class MultipeerManager: NSObject, ObservableObject {
     let config = NINearbyPeerConfiguration(peerToken: token)
     niSession.run(config)
   }
-
-  private func peerID(for token: NIDiscoveryToken) -> MCPeerID? {
-    return peerDiscoveryTokens.first(where: { $0.value == token })?.key
-  }
 }
 
 extension MultipeerManager: MCSessionDelegate {
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
-    DispatchQueue.main.async {
-      if state == .connected {
-        self.sendDiscoveryToken()
-        self.hasSentPeerID = false
-      }
+    if state == .connected {
+      self.sendDiscoveryToken(to: peerID)
+      self.hasSentPeerID = false
     }
   }
 
   func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-    if let token = try? NSKeyedUnarchiver.unarchivedObject(
-      ofClass: NIDiscoveryToken.self, from: data)
-    {
+    let token = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NIDiscoveryToken.self, from: data)
+
+    if let token {
       peerDiscoveryTokens[peerID] = token
       setupNearbyInteraction(with: token)
     }
@@ -111,20 +117,17 @@ extension MultipeerManager: MCSessionDelegate {
   ) {}
 }
 
+// Immediately connect all available peers with each other
 extension MultipeerManager: MCNearbyServiceBrowserDelegate, MCNearbyServiceAdvertiserDelegate {
   func advertiser(
     _ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID,
     withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void
-  ) {
-    invitationHandler(true, session)
-  }
+  ) { invitationHandler(true, session) }
 
   func browser(
     _ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID,
     withDiscoveryInfo info: [String: String]?
-  ) {
-    browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
-  }
+  ) { browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10) }
 
   func browser(_: MCNearbyServiceBrowser, lostPeer _: MCPeerID) {}
   func advertiser(_: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {}
@@ -135,14 +138,12 @@ extension MultipeerManager: NISessionDelegate {
   func session(_ session: NISession, didUpdate nearbyObjects: [NINearbyObject]) {
     for object in nearbyObjects {
       let token = object.discoveryToken
-      guard let peer = peerDiscoveryTokens.first(where: { $0.value == token })?.key else {
-        continue
-      }
+      let peer = peerDiscoveryTokens.first(where: { $0.value == token })?.key
+
+      guard let peer else { continue }
       guard let dist = object.distance else { continue }
 
-      DispatchQueue.main.async {
-        self.distances[peer] = dist
-      }
+      DispatchQueue.main.async { self.distances[peer] = dist }
     }
 
     func session(_ session: NISession, didInvalidateWith error: Error) {
