@@ -14,6 +14,7 @@ let project = Project(
       destinations: .iOS,
       product: .app,
       bundleId: "io.tuist.Cardtier",
+      deploymentTargets: .iOS("18.0"),
       infoPlist: .extendingDefault(
         with: [
           "UILaunchScreen": [

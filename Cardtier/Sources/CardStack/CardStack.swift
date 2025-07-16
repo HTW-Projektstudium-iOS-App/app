@@ -111,7 +111,14 @@ struct CardStack: View {
               .padding(.horizontal)
               .padding(.vertical)
           }
-          .buttonStyle(.glass)
+          .apply {
+            if #available(iOS 26.0, *) {
+              $0.buttonStyle(.glass)
+            } else {
+              $0.buttonStyle(.bordered)
+                .foregroundStyle(.black)
+            }
+          }
 
           Spacer()
         }
