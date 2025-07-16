@@ -60,6 +60,10 @@ struct ContentView: View {
               .zIndex(100)
 
               VStack(spacing: 0) {
+                Text(
+                  "\(cardExchange.closestPeer?.peer.displayName ?? "No peer") - \(cardExchange.closestPeer?.distance ?? 0)"
+                )
+
                 CardStack(cardOffset: !isStackExpanded ? -150 : 20) {
                   stackScrollOffset = $0
                 }

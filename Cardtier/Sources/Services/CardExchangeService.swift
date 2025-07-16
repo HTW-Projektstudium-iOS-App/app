@@ -10,6 +10,9 @@ class CardExchangeService: NSObject, ObservableObject {
 
   private var cancellables = Set<AnyCancellable>()
 
+  private var encoder = JSONEncoder()
+  private var decoder = JSONDecoder()
+
   private var session: MCSession!
   private var advertiser: MCNearbyServiceAdvertiser!
   private var browser: MCNearbyServiceBrowser!
@@ -20,8 +23,7 @@ class CardExchangeService: NSObject, ObservableObject {
   @Published private var distances: [MCPeerID: Float] = [:]
   @Published var closestPeer: (peer: MCPeerID, distance: Float)?
 
-  // TODO: does this make sense?
-  private var hasSentPeerID = false
+  let onCardReceived: ((Card) -> Void)? = nil
 
   override init() {
     super.init()
@@ -50,25 +52,16 @@ class CardExchangeService: NSObject, ObservableObject {
 
     $distances
       .compactMap { $0.min(by: { $0.value < $1.value }) }
-      .handleEvents(receiveOutput: { [weak self] in
-        self?.closestPeer = (peer: $0.key, distance: $0.value)
-      })
-      .debounce(for: .seconds(2), scheduler: RunLoop.main)
-      .sink { [weak self] in
-        guard self?.hasSentPeerID == true else { return }
-        self?.hasSentPeerID = true
-
-        self?.sendData(to: $0.key)
-      }
+      .map { (peer: $0.key, distance: $0.value) }
+      .assign(to: \.closestPeer, on: self)
       .store(in: &cancellables)
   }
 
-  func sendData(to peer: MCPeerID) {
-    let name = localPeerID.displayName
-    if let data = name.data(using: .utf8) {
+  func sendCard(_ card: Card, to peer: MCPeerID) {
+    if let data = try? encoder.encode(CardDTO(from: card)) {
       try? session.send(data, toPeers: [peer], with: .reliable)
 
-      print("Peer-ID an nächsten Peer gesendet: \(peer.displayName)")
+      print("Sent card: \(card.id) to peer: \(peer.displayName)")
     }
   }
 }
@@ -79,16 +72,29 @@ extension CardExchangeService: MCSessionDelegate {
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
     if state == .connected {
       self.sendDiscoveryToken(to: peerID)
-      self.hasSentPeerID = false
     }
   }
 
+  // Receive either a discovery token or a card
   func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
     let token = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NIDiscoveryToken.self, from: data)
 
     if let token {
+      print("Received discovery token from peer: \(peerID.displayName)")
+
       peerDiscoveryTokens[peerID] = token
       setupNearbyInteraction(with: token)
+      return
+    }
+
+    let cardData = try? decoder.decode(CardDTO.self, from: data)
+    if let cardData {
+      print("Received card from peer: \(peerID.displayName)")
+
+      let card = cardData.createCard()
+      DispatchQueue.main.async {
+        self.onCardReceived?(card)
+      }
     }
   }
 
