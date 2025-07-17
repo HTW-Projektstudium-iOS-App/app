@@ -3,6 +3,8 @@ import SwiftUI
 struct CardStack: View {
   @Namespace private var namespace
 
+  @Environment(\.modelContext) var modelContext
+
   var cards: [Card]
   @State private var focusedCardID: UUID?
   private var focusedCard: Card? { cards.first(where: { $0.id == focusedCardID }) }
@@ -85,51 +87,67 @@ struct CardStack: View {
       }
 
       if let focusedCard {
-        VStack(spacing: 32) {
-          Spacer()
-
-          CardView(
-            card: focusedCard,
-            focusedCardID: $focusedCardID,
-            isFlipped: isFocusedCardFlipped,
-            isScrolling: isScrolling,
-            scrollVelocity: scrollVelocity
-          )
-          .focusedCard()
-          .matchedGeometryEffect(id: focusedCard.id, in: namespace)
-          .onTapGesture {
-            withAnimation(.cardFlip) {
-              isFocusedCardFlipped.toggle()
-            }
-          }
-          .animation(.cardStack, value: focusedCardID)
-
-          Button(action: {
-            withAnimation {
-              isShowingInfo = true
-            }
-          }) {
-            Text("\(Image(systemName: "info.circle")) More Information")
-              .padding(.horizontal)
-              .padding(.vertical)
-          }
-          .apply {
-            if #available(iOS 26.0, *) {
-              $0.buttonStyle(.glass)
-            } else {
-              $0.buttonStyle(.bordered)
-                .foregroundStyle(.black)
-            }
-          }
-
-          Spacer()
-        }
-        .padding()
-        .sheet(isPresented: $isShowingInfo) {
-          CardInfoSheet(card: focusedCard, isPresented: $isShowingInfo)
-        }
+        focusedCardView
       }
     }
+  }
+
+  private var focusedCardView: some View {
+    VStack(spacing: 32) {
+      Spacer()
+
+      CardView(
+        card: focusedCard!,
+        focusedCardID: $focusedCardID,
+        isFlipped: isFocusedCardFlipped,
+        isScrolling: isScrolling,
+        scrollVelocity: scrollVelocity
+      )
+      .focusedCard()
+      .matchedGeometryEffect(id: focusedCard!.id, in: namespace)
+      .onTapGesture {
+        withAnimation(.cardFlip) {
+          isFocusedCardFlipped.toggle()
+        }
+      }
+      .animation(.cardStack, value: focusedCardID)
+
+      Button(action: {
+        withAnimation {
+          isShowingInfo = true
+        }
+      }) {
+        Text("\(Image(systemName: "info.circle")) More Information")
+          .padding(.horizontal)
+          .padding(.vertical)
+      }
+      .simultaneousGesture(
+        LongPressGesture(minimumDuration: 5).onEnded { _ in
+          print("delete")
+          try? modelContext.delete(model: Card.self)
+          // swiftlint:disable:next force_try
+          try! crash()
+        }
+      )
+      .apply {
+        if #available(iOS 26.0, *) {
+          $0.buttonStyle(.glass)
+        } else {
+          $0.buttonStyle(.bordered)
+            .foregroundStyle(.black)
+        }
+      }
+
+      Spacer()
+    }
+    .padding()
+    .sheet(isPresented: $isShowingInfo) {
+      CardInfoSheet(card: focusedCard!, isPresented: $isShowingInfo)
+    }
+  }
+
+  private func crash() throws {
+    throw NSError(domain: "com.example.crash", code: 1, userInfo: nil)
   }
 
   private var scrollGesture: some Gesture {

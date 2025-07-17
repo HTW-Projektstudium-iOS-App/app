@@ -24,10 +24,6 @@ struct EditView: View {
 
         if cardModel == nil {
           modelContext.insert(cardData.createCard())
-
-          Card.sampleCards.forEach { card in
-            modelContext.insert(card)
-          }
         } else {
           cardData.apply(to: cardModel!)
         }
@@ -71,9 +67,9 @@ struct EditView: View {
     self.onDismiss = onDismiss
 
     if let card = cardModel {
-      cardData = CardDraft(from: card)
+      self.cardData = CardDraft(from: card)
     } else {
-      cardData = CardDraft(from: Card.sampleUserCard)
+      self.cardData = CardDraft(from: Card.sampleUserCard)
     }
   }
 

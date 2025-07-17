@@ -32,7 +32,7 @@ let project = Project(
         ]
       ),
       sources: ["Cardtier/Sources/**"],
-      resources: ["Cardtier/Resources/**"],
+      resources: ["Cardtier/Resources/**", "Cardtier/Cardtier.icon"],
       dependencies: [
         .package(product: "SwiftLintBuildToolPlugin", type: .plugin)
       ]

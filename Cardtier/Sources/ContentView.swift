@@ -27,7 +27,7 @@ struct ContentView: View {
   @State private var isStackExpanded: Bool = false
   @State private var stackScrollOffset: CGFloat = 0
 
-  var isInProximity: Bool { cardExchange.closestPeer?.distance ?? 1 < 0.06 }
+  var isInProximity: Bool { cardExchange.closestPeer?.distance ?? 1 < 0.2 }
   @State private var isTransmitting = false
   @State private var showTransmissionControls = false
   @GestureState private var cardTransmissionDragOffset: CGSize = .zero
@@ -63,6 +63,7 @@ struct ContentView: View {
           Image(asset: CardtierImages(name: "Background Gradient"))
             .resizable()
             .ignoresSafeArea()
+            // WARN: REMOVE REMOVE REMOVE
             .onTapGesture {
               withAnimation(.spring(response: 0.8, dampingFraction: 0.5)) {
                 isTransmitting = true
@@ -174,7 +175,7 @@ struct ContentView: View {
                   y: isTransmitting
                     ? cardTransmissionDragOffset.height + cardTransmissionOffset.height : 0
                 )
-                .onChange(debounced: .seconds(2), of: isInProximity) { _, newValue in
+                .onChange(debounced: .seconds(1), of: isInProximity) { _, newValue in
                   if newValue {
                     withAnimation(.spring(response: 0.8, dampingFraction: 0.5)) {
                       isTransmitting = true
