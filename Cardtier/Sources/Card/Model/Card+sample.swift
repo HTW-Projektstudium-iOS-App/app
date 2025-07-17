@@ -28,6 +28,7 @@ extension Card {
 
   static var sampleCards: [Card] = [
     Card(
+      isUserCard: false,
       name: "Stefan Quandt",
       title: "Deputy Chairman",
       company: "BMW / Delton AG",
@@ -45,6 +46,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 52.457821, longitude: 13.526853)
     ),
     Card(
+      isUserCard: false,
       name: "Klaus‑Michael Kühne",
       title: "Honorary Chairman",
       company: "Kühne + Nagel",
@@ -62,6 +64,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 53.5511, longitude: 9.9937)
     ),
     Card(
+      isUserCard: false,
       name: "Dieter Schwarz",
       title: "Owner & Former CEO",
       company: "Schwarz Gruppe (Lidl, Kaufland)",
@@ -80,6 +83,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 49.1427, longitude: 9.2100)
     ),
     Card(
+      isUserCard: false,
       name: "Georg Schaeffler",
       title: "Chairman",
       company: "Schaeffler Group",
@@ -99,6 +103,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 49.5711, longitude: 10.9275)
     ),
     Card(
+      isUserCard: false,
       name: "Alexander Otto",
       title: "CEO",
       company: "ECE Group (Otto Group)",
@@ -112,10 +117,11 @@ extension Card {
         secondaryColor: Color(red: 0.3, green: 0.2, blue: 0.3),  // dark plum
         fontName: "Times New Roman", designStyle: .traditional
       ),
-      collectionDate: Date(),
+      collectionDate: Date().addingTimeInterval(-60 * 60 * 24 * 7),
       collectionLocation: CLLocationCoordinate2D(latitude: 53.5511, longitude: 9.9937)
     ),
     Card(
+      isUserCard: false,
       name: "Reinhold Würth",
       title: "Honorary Chairman",
       company: "Würth Group",
@@ -133,6 +139,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 49.1911, longitude: 9.6986)
     ),
     Card(
+      isUserCard: false,
       name: "Susanne Klatten",
       title: "Major Shareholder",
       company: "BMW, Altana, SGL Carbon",
@@ -150,6 +157,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 51.6595, longitude: 6.6236)
     ),
     Card(
+      isUserCard: false,
       name: "Theo Albrecht Jr.",
       title: "Owner & Chairman",
       company: "Aldi Nord & Trader Joe's",
@@ -169,6 +177,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 51.4556, longitude: 7.0116)
     ),
     Card(
+      isUserCard: false,
       name: "Martin Viessmann",
       title: "CEO",
       company: "Viessmann Group",
@@ -186,6 +195,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 51.078, longitude: 8.672)
     ),
     Card(
+      isUserCard: false,
       name: "Hasso Plattner",
       title: "Co‑Founder",
       company: "SAP",
@@ -204,6 +214,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 49.2931, longitude: 8.6472)
     ),
     Card(
+      isUserCard: false,
       name: "Andreas Strüngmann",
       title: "Co‑Founder",
       company: "Hexal / BioNTech",
@@ -221,6 +232,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 49.9929, longitude: 8.2473)
     ),
     Card(
+      isUserCard: false,
       name: "Thomas Strüngmann",
       title: "Co‑Founder",
       company: "Hexal / BioNTech",
@@ -239,6 +251,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 49.9929, longitude: 8.2473)
     ),
     Card(
+      isUserCard: false,
       name: "Beate Heister",
       title: "Co‑Owner",
       company: "Aldi Süd",
@@ -256,6 +269,7 @@ extension Card {
       collectionLocation: CLLocationCoordinate2D(latitude: 51.4556, longitude: 7.0116)
     ),
     Card(
+      isUserCard: false,
       name: "Michael Otto",
       title: "Honorary Chairman",
       company: "Otto Group",

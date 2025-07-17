@@ -43,7 +43,8 @@ struct CardDTO: Codable {
       personalAddress: personalAddress,
       slogan: slogan,
       logos: logos,
-      style: style
+      style: style,
+      collectionDate: Date(),
     )
   }
 }

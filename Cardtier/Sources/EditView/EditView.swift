@@ -24,6 +24,10 @@ struct EditView: View {
 
         if cardModel == nil {
           modelContext.insert(cardData.createCard())
+
+          Card.sampleCards.forEach { card in
+            modelContext.insert(card)
+          }
         } else {
           cardData.apply(to: cardModel!)
         }
@@ -78,7 +82,6 @@ struct EditView: View {
       ScrollView {
         ScrollView(.horizontal, showsIndicators: false) {
           HStack(spacing: 10) {
-            // TODO: hide info button when editing
             CardView(
               card: cardData.createCard(), focusedCardID: .constant(nil), isFlipped: false,
               isScrolling: false,
