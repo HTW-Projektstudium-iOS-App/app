@@ -3,7 +3,7 @@ import SwiftUI
 struct CardStack: View {
   @Namespace private var namespace
 
-  @State private var cards: [Card] = Card.sampleCards
+  var cards: [Card]
   @State private var focusedCardID: UUID?
   private var focusedCard: Card? { cards.first(where: { $0.id == focusedCardID }) }
 
@@ -62,10 +62,11 @@ struct CardStack: View {
                     focusedCardID = card.id
                   }
                 }
+                .transition(.asymmetric(insertion: .move(edge: .leading), removal: .identity))
               }
+              .animation(.default, value: cards)
             }
             .animation(.cardStack, value: focusedCardID)
-            // .padding(.top, focusedCardID != nil ? 150 : 0)
           }
           .onGeometryChange(
             for: CGFloat.self,
@@ -210,7 +211,7 @@ struct CardStack: View {
 }
 
 #Preview {
-  CardStack(cardOffset: 0) { _ in
+  CardStack(cards: Card.sampleCards, cardOffset: 0) { _ in
     // do nothing
   }
 }

@@ -33,6 +33,7 @@ import SwiftUI
   var slogan: String?
 
   /// Array of logos or images to display
+  @Attribute(.externalStorage)
   var logos: [Data]
 
   /// Visual styling for the card

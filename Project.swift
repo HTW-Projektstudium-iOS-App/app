@@ -18,6 +18,12 @@ let project = Project(
       infoPlist: .extendingDefault(
         with: [
           "UILaunchStoryboardName": "LaunchScreen",
+
+          "NSLocalNetworkUsageDescription":
+            "Wird benötigt, um mit anderen Geräten in der Nähe zu interagieren.",
+          "NSNearbyInteractionUsageDescription":
+            "Wird benötigt, um mit anderen Geräten in der Nähe zu interagieren.",
+          "NSBonjourServices": ["_htw-cardtier._tcp.", "_htw-cardtier._udp."],
         ]
       ),
       sources: ["Cardtier/Sources/**"],
