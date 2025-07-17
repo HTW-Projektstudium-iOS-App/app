@@ -4,6 +4,7 @@ import SwiftUI
 struct ContentView: View {
   @Namespace private var namespace
 
+  let contactService = ContactService()
   @EnvironmentObject var cardExchange: CardExchangeService
   @Environment(\.modelContext) private var modelContext
 
@@ -31,11 +32,23 @@ struct ContentView: View {
   @State private var cardTransmissionOffset: CGSize = .zero
   @State private var isSendingCard = false
 
+  @State private var saveToContactError = false
+  @State private var saveToContactErrorMsg = ""
+
   private func receiveCard(card: Card) {
     print("Received card: \(card.id)")
 
     guard !collectedCards.contains(where: { $0.id == card.id }) else { return }
     modelContext.insert(card)
+
+    contactService.save(card: card) { result in
+      switch result {
+      case .success: break
+      case .failure(let err):
+        saveToContactErrorMsg = err.localizedDescription
+        saveToContactError = true
+      }
+    }
   }
 
   var body: some View {
@@ -63,6 +76,7 @@ struct ContentView: View {
                   editingCard = false
                 }
               }
+              .zIndex(100)
             } else if let userCard {
               if isTransmitting {
                 Color.clear
@@ -165,6 +179,11 @@ struct ContentView: View {
                       }
                     }
                   }
+                }
+                .alert("Error", isPresented: $saveToContactError) {
+                  Button("OK", role: .cancel) {}
+                } message: {
+                  Text(saveToContactErrorMsg)
                 }
 
                 Text("Swipe up to send card")

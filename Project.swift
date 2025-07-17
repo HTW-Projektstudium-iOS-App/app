@@ -19,10 +19,12 @@ let project = Project(
         with: [
           "UILaunchStoryboardName": "LaunchScreen",
 
+          "NSContactsUsageDescription": "Used to save cards to your contacts.",
+
           "NSLocalNetworkUsageDescription":
-            "Wird benötigt, um mit anderen Geräten in der Nähe zu interagieren.",
+            "Used to exchange cards with devices nearby.",
           "NSNearbyInteractionUsageDescription":
-            "Wird benötigt, um mit anderen Geräten in der Nähe zu interagieren.",
+            "Used to exchange cards with devices nearby.",
           "NSBonjourServices": ["_htw-cardtier._tcp.", "_htw-cardtier._udp."],
         ]
       ),
