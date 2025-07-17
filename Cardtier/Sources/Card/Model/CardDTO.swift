@@ -30,7 +30,6 @@ struct CardDTO: Codable {
   }
 
   /// Creates a business card from a data transfer object
-  /// TODO: get collection location from user physical location
   func createCard() -> Card {
     Card(
       id: id,
