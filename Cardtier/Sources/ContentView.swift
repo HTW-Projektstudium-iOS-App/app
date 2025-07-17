@@ -5,6 +5,8 @@ struct ContentView: View {
   @Namespace private var namespace
 
   let contactService = ContactService()
+  let locationService = LocationService()
+
   @EnvironmentObject var cardExchange: CardExchangeService
   @Environment(\.modelContext) private var modelContext
 
@@ -36,17 +38,20 @@ struct ContentView: View {
   @State private var saveToContactErrorMsg = ""
 
   private func receiveCard(card: Card) {
-    print("Received card: \(card.id)")
-
     guard !collectedCards.contains(where: { $0.id == card.id }) else { return }
-    modelContext.insert(card)
 
-    contactService.save(card: card) { result in
-      switch result {
-      case .success: break
-      case .failure(let err):
-        saveToContactErrorMsg = err.localizedDescription
-        saveToContactError = true
+    locationService.getCurrentLocation { location in
+      card.collectionLocation = location
+
+      modelContext.insert(card)
+
+      contactService.save(card: card) { result in
+        switch result {
+        case .success: break
+        case .failure(let err):
+          saveToContactErrorMsg = err.localizedDescription
+          saveToContactError = true
+        }
       }
     }
   }

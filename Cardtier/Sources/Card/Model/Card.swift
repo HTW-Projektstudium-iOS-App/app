@@ -47,7 +47,13 @@ import SwiftUI
 
   /// Geographic location where the card was collected
   var collectionLocation: CLLocationCoordinate2D {
-    CLLocationCoordinate2D(latitude: collectionLatitude, longitude: collectionLongitude)
+    get {
+      CLLocationCoordinate2D(latitude: collectionLatitude, longitude: collectionLongitude)
+    }
+    set {
+      collectionLatitude = newValue.latitude
+      collectionLongitude = newValue.longitude
+    }
   }
 
   /// Creates a new business card with full details

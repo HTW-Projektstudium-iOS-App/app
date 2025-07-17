@@ -21,6 +21,9 @@ let project = Project(
 
           "NSContactsUsageDescription": "Used to save cards to your contacts.",
 
+          "NSLocationWhenInUseUsageDescription":
+            "Used to record the location where business cards are received.",
+
           "NSLocalNetworkUsageDescription":
             "Used to exchange cards with devices nearby.",
           "NSNearbyInteractionUsageDescription":
