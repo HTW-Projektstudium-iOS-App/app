@@ -25,7 +25,7 @@ struct CardStack: View {
   var body: some View {
     ZStack(alignment: .top) {
       ScrollViewReader { proxy in
-        ScrollView(.vertical, showsIndicators: false) {
+        ScrollView(.vertical) {
           ZStack(alignment: .top) {
             // Transparent overlay that captures taps to reset focus
             // When tapped outside cards, deselects the currently focused card
