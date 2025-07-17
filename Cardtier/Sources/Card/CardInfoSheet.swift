@@ -27,6 +27,7 @@ struct CardInfoSheet: View {
         collectionDataSection
       }
       .padding()
+      .padding(.bottom, 100)
     }
     .ignoresSafeArea()
     .background(Color(.systemBackground))
