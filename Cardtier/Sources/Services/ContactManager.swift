@@ -14,6 +14,7 @@ struct ContactService {
         DispatchQueue.main.async { completion(.failure(error)) }
         return
       }
+
       guard granted else {
         let authError = NSError(
           domain: "ContactAccess",

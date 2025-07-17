@@ -6,11 +6,6 @@ import SwiftUI
 struct CardInfoSheet: View {
   let card: Card
   @Binding var isPresented: Bool
-  @State private var showAddSuccess = false
-  @State private var showAddError = false
-  @State private var addErrorMsg = ""
-
-  let contactService = ContactService()
 
   var body: some View {
     ScrollView {
@@ -37,11 +32,7 @@ struct CardInfoSheet: View {
     .background(Color(.systemBackground))
     // Add close button at the bottom, respecting safe area
     .safeAreaInset(edge: .bottom) {
-      VStack(spacing: 8) {
-        addToContactsButton
-        closeButton
-      }
-      .background(.ultraThinMaterial)
+      closeButton
     }
   }
 
@@ -194,40 +185,6 @@ struct CardInfoSheet: View {
     Divider()
       .background(card.style.secondaryColor?.opacity(0.5) ?? Color.gray.opacity(0.5))
       .padding(.vertical, 4)
-  }
-
-  /// add to contact button
-  private var addToContactsButton: some View {
-    Button(action: {
-      contactService.save(card: card) { result in
-        switch result {
-        case .success:
-          showAddSuccess = true
-        case .failure(let err):
-          addErrorMsg = err.localizedDescription
-          showAddError = true
-        }
-      }
-    }) {
-      Text("Add to Contacts")
-        .font(CardElements.customFont(name: card.style.fontName, size: 16, weight: .medium))
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
-    }
-    .buttonStyle(.borderedProminent)
-    .tint(card.style.secondaryColor ?? .accentColor)
-    .padding(.horizontal)
-    .alert("Contact Added", isPresented: $showAddSuccess) {
-      Button("OK", role: .cancel) {}
-    } message: {
-      Text("This card has been saved to your Contacts.")
-
-    }
-    .alert("Error", isPresented: $showAddError) {
-      Button("OK", role: .cancel) {}
-    } message: {
-      Text(addErrorMsg)
-    }
   }
 
   /// Close button at the bottom of the sheet
