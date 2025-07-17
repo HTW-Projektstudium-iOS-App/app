@@ -62,10 +62,11 @@ struct CardStack: View {
                     focusedCardID = card.id
                   }
                 }
+                .transition(.asymmetric(insertion: .move(edge: .leading), removal: .identity))
               }
+              .animation(.default, value: cards)
             }
             .animation(.cardStack, value: focusedCardID)
-            // .padding(.top, focusedCardID != nil ? 150 : 0)
           }
           .onGeometryChange(
             for: CGFloat.self,
