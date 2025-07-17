@@ -10,6 +10,8 @@ struct CardInfoSheet: View {
   @State private var showAddError = false
   @State private var addErrorMsg = ""
 
+  let contactService = ContactService()
+
   var body: some View {
     ScrollView {
       VStack(alignment: .leading, spacing: 20) {
@@ -197,7 +199,7 @@ struct CardInfoSheet: View {
   /// add to contact button
   private var addToContactsButton: some View {
     Button(action: {
-      ContactManager.save(card: card) { result in
+      contactService.save(card: card) { result in
         switch result {
         case .success:
           showAddSuccess = true

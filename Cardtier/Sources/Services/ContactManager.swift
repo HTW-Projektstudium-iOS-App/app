@@ -2,11 +2,12 @@ import Contacts
 import Foundation
 import UIKit
 
-/// save a business card into the iOS Contacts app.
-struct ContactManager {
-  static func save(card: Card, completion: @escaping (Result<Void, Error>) -> Void) {
-    let store = CNContactStore()
+/// Saves a business card into the iOS Contacts app
+struct ContactService {
+  let store = CNContactStore()
 
+  // swiftlint:disable:next function_body_length cyclomatic_complexity
+  func save(card: Card, completion: @escaping (Result<Void, Error>) -> Void) {
     // Request permission to access Contacts.
     store.requestAccess(for: .contacts) { granted, error in
       if let error = error {
