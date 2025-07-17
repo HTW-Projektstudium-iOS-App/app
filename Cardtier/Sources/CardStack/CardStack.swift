@@ -42,7 +42,7 @@ struct CardStack: View {
                 }
               }
 
-            VStack(spacing: 0) {
+            VStack(spacing: cardOffset > 0 ? cardOffset : 0) {
               ForEach(Array(cards.filter { $0.id != focusedCardID }.enumerated()), id: \.element.id)
               { index, card in
                 CardView(
@@ -56,7 +56,7 @@ struct CardStack: View {
                 .padding(.horizontal)
                 .matchedGeometryEffect(id: card.id, in: namespace)
                 .zIndex(card.id == focusedCardID ? 2000 : -1)
-                .offset(y: cardOffset * CGFloat(index))
+                .offset(y: cardOffset < 0 ? cardOffset * CGFloat(index) : 0)
                 .onTapGesture {
                   withAnimation {
                     focusedCardID = card.id
@@ -66,6 +66,7 @@ struct CardStack: View {
               }
               .animation(.default, value: cards)
             }
+            .padding(.bottom, 50)
             .animation(.cardStack, value: focusedCardID)
           }
           .onGeometryChange(
