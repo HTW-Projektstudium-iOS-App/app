@@ -29,6 +29,7 @@ struct ContentView: View {
   @State private var showTransmissionControls = false
   @GestureState private var cardTransmissionDragOffset: CGSize = .zero
   @State private var cardTransmissionOffset: CGSize = .zero
+  @State private var isSendingCard = false
 
   private func receiveCard(card: Card) {
     print("Received card: \(card.id)")
@@ -129,11 +130,14 @@ struct ContentView: View {
                         // fly off the screen
                         withAnimation(.easeOut(duration: 0.4)) {
                           cardTransmissionOffset.height = -geometry.size.height - 200
+                          showTransmissionControls = false
+                          isSendingCard = true
                         } completion: {
+                          isSendingCard = false
+
                           withAnimation {
                             cardTransmissionOffset = .zero
                             isTransmitting = false
-                            showTransmissionControls = false
                           }
                         }
 
@@ -167,7 +171,12 @@ struct ContentView: View {
                   .foregroundStyle(.secondary)
                   .padding(.top, 20)
                   .zIndex(75)
-                  .offset(y: showTransmissionControls ? 0 : 40)
+                  .offset(
+                    y:
+                      showTransmissionControls
+                      ? (!isSendingCard ? 0 : geometry.size.height + 100)
+                      : 40
+                  )
                   .opacity(showTransmissionControls ? 1 : 0)
               }
               .zIndex(100)
