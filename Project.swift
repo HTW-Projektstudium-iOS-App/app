@@ -32,10 +32,18 @@ let project = Project(
         ]
       ),
       sources: ["Cardtier/Sources/**"],
-      resources: ["Cardtier/Resources/**"],
+      resources: [
+        .glob(pattern: "Cardtier/Resources/**", excluding: ["Cardtier/Resources/Cardtier.icon/**"]),
+        .glob(pattern: "Cardtier/Resources/Cardtier.icon", excluding: []),
+      ],
       dependencies: [
         .package(product: "SwiftLintBuildToolPlugin", type: .plugin)
-      ]
+      ],
+      settings: .settings(
+        base: [
+          "ASSETCATALOG_COMPILER_APPICON_NAME": "Cardtier"
+        ]
+      )
     ),
     .target(
       name: "CardtierTests",
